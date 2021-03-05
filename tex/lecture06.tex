@@ -40,6 +40,7 @@
     \item $\textproc{successor}(k)$ is the first active node beginning at $k$
 \end{itemize}
 \begin{figure}[H]
+    \tikzsetnextfilename{consistent-hashing}
     \begin{tikzpicture}[scale=2]
         \draw (0, 0) circle [radius = 1];
         \node[draw, fill, circle, inner sep=0,minimum size=2mm,green!40!black, label=below:{$0$}] at (0.000, 1.000){};
@@ -95,6 +96,7 @@
 \end{itemize}
 
 \begin{figure}[H]
+    \tikzsetnextfilename{dht-join}
     \begin{tikzpicture}[scale=2]
         \draw (0, 0) circle [radius=1];
         \node[draw, fill, circle, inner sep=0,minimum size=2mm,green!40!black, label=below:{$4$}] at (0.413, 0.911){};
@@ -158,6 +160,7 @@
 
 \subsubsection{2-D Parity}
 \begin{figure}[H]
+    \tikzsetnextfilename{2d-parity}
     \begin{tikzpicture}[node distance=0.1cm]
         \node[draw, rectangle] (top) {0101001};
         \node[below=of top,draw, rectangle] (1) {1101001};

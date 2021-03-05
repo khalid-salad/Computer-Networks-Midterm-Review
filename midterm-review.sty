@@ -76,6 +76,8 @@
 \usetikzlibrary{calc}
 \usetikzlibrary{arrows, arrows.meta}
 \usetikzlibrary{trees}
+\usetikzlibrary{external}
+\tikzexternalize[prefix=tikzimages/]
 \tikzset{>={Latex[width=2mm,length=2mm]}}
 \newcommand\DoubleLine[7][4pt]{%
     \path(#2)--(#3)coordinate[at start](h1)coordinate[at end](h2);
@@ -119,6 +121,7 @@
 %\newtheorem{problem}{Problem}[chapter]
 \theoremstyle{plain}
 \tcbuselibrary{theorems, skins, breakable, minted, listings, most}
+\tcbset{shield externalize}
 \newtcbtheorem[number within=section]{theorem}{Theorem}{colback=gray!25,colframe=gray!90!black,fonttitle=\bfseries, separator sign={~$\blacktriangleright$}}{thm}
 \newtcbtheorem[number within=section]{definition}{Definition}{colback=blue!5,colframe=blue!35!black,fonttitle=\bfseries, separator sign={~$\blacktriangleright$}}{def}
 \newtcbtheorem[use counter from=theorem]{lemma}{Lemma}{colback=gray!25,colframe=gray!90!black,fonttitle=\bfseries, separator sign={~$\blacktriangleright$}}{lem}
@@ -192,40 +195,6 @@
 
 %..........................................................
 
-\newcommand{\pres}{\mathcal{P}}
-\newcommand{\I}{\mathcal{I}}
-\renewcommand{\geq}{\geqslant}
-\renewcommand{\ge}{\geqslant}
-\renewcommand{\leq}{\leqslant}
-\renewcommand{\le}{\leqslant}
-\newcommand{\set}[1]{\left\lbrace#1\right\rbrace}
-\newcommand{\la}{\leftarrow}
-%\newcommand{\bigO}{\mathcal{O}}
-%\renewcommand{\algorithmiccomment}[1]{/\!/ #1}
-\newcommand{\pair}[1]{\langle#1\rangle}
-\newcommand{\eps}{\varepsilon}
-\newcommand{\lel}{{\mathsc{LE}}}
-\newcommand{\dd}{{\mathsc{DD}}}
-\newcommand{\infl}{{\mathsc{Infl}}}
-\newcommand{\Rev}{{\mathsc{Reverse}}}
-%\newcommand{\For}{{\mathsc{Forward}}}
-\newcommand{\val}{{\mathsc{val}}}
-\newcommand{\lo}{{\mathsc{Low}}}
-\newcommand{\hi}{{\mathsc{High}}}
-%\renewcommand{\mid}{{\mathsc{Mid}}}
-\newcommand{\hid}{{\mathsc{Hid}}}
-\newcommand{\A}{{\mathcal{A}}}
-\newcommand{\D}{{\mathcal{D}}}
-\renewcommand{\L}{{\mathcal{L}}}
-\newcommand{\C}{{\mathcal{C}}}
-\newcommand{\V}{{\mathcal{V}}}
-\newcommand{\R}{{\mathcal{R}}}
-\newcommand{\sa}{{\sc Stable Agreement}}
-\newcommand{\ssa}{{\sc Strong Stable Agreement}}
-\newcommand{\ssd}{{\sc Sufficient Support Detection}}
-\newcommand{\bc}{{\sc Binary Consensus}}
-\renewcommand{\t}{{\sc true}}
-\newcommand{\f}{{\sc false}}
 \newcommand{\floor}[1]{\left\lfloor#1\right\rfloor}
 \newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
 \newcommand{\cyclicgroup}[1]{\left\langle#1\right\rangle}

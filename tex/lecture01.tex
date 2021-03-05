@@ -31,6 +31,7 @@
 \end{itemize}
 \section{Packet vs. Circuit Switching}
 \begin{figure}[H]
+    \tikzsetnextfilename{packet-v-circuit}
     \begin{tikzpicture}[every node/.style={white, draw=blue, circle, minimum size=1cm, fill=blue}]
         \node[top color=blue!30!white, bottom color=blue!60!white] (a) {$A$};
         \node[top color=blue!30!white, bottom color=blue!60!white,below=of a] (b) {$B$};
@@ -56,6 +57,7 @@
 \end{itemize}
 \begin{multicols}{2}
     \begin{figure}[H]
+        \tikzsetnextfilename{circuit-switching}
         \begin{tikzpicture}[every node/.style={rectangle, draw=blue!60!white, minimum size=1cm}]
             \node (a) {$A$};
             \node[below=of a] (b) {$B$};
@@ -209,6 +211,7 @@
 \url{https://en.wikipedia.org/wiki/Communication_protocol}
 \section{Network Protocols}
 \begin{figure}[H]
+    \tikzsetnextfilename{network-protocols}
     \begin{tikzpicture}
         \node[draw,rectangle, minimum height=3cm, minimum width=1cm,label=below:{Your Phone}, rounded corners, top color =blue!30!white, bottom color=blue!60!white] (ph) {};
         \node[right=8cm of ph,draw,rectangle, minimum size=3cm,label=below:{Facebook Server}, rounded corners, top color =blue!30!white, bottom color=blue!60!white] (fb) {};
@@ -216,7 +219,7 @@
         \draw[blue!60!white, ->] ([xshift=0.5cm,yshift=1cm]ph.east) -- ([xshift=-0.5cm,yshift=0.2cm]fb.west);
         \draw[blue!60!white, ->] ([xshift=-0.5cm,yshift=-0.2cm]fb.west) -- ([xshift=0.5cm,yshift=-1cm]ph.east);
         \path (ph.north east) -- (fb.north west) node[pos=0.5] () {GET FACEBOOK/profile-for-coolguy};
-        \path ([yshift=-0.5cm]ph.south east) -- ([yshift=-0.5cm]fb.south west) node[align=center,pos=0.5] () {OK name: cool,\\year in school: 4, \dots\\OR\\\verb|(*^*$^*&#$^|\\\verb|%*&#$^%*#^&|};
+        \path ([yshift=-0.5cm]ph.south east) -- ([yshift=-0.5cm]fb.south west) node[align=center,pos=0.5] () {OK name: cool,\\year in school: 4, \dots\\OR\\(*\textasciicircum*\$\textasciicircum*\&\#\$\textasciicircum\\\%*\&\#\$\^\%*\#\textasciicircum\&};
     \end{tikzpicture}
 \end{figure}
 What are the rules, format, and meaning in this message exchange?

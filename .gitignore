@@ -211,7 +211,8 @@ pythontex-files-*/
 
 # TikZ & PGF
 *.dpth
-*.md5
+# Need MD5 for tikz externalize
+# *.md5
 *.auxlock
 
 # todonotes
