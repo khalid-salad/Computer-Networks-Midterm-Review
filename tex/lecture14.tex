@@ -1,0 +1,254 @@
+\chapter{Distance Vector, Link State, and Inter-AS Routing}
+\section{Routing}
+\subsection{Good news travels fast}
+\begin{figure}[H]
+    \tikzsetnextfilename{goodnews}
+    \begin{tikzpicture}[every node/.style={draw=blue,circle},node distance=2.5cm]
+        \node (a) {$A$};
+        \node[above right=1.5 and 2 of a] (b) {$B$};
+        \node[below right=1.5 and 2 of b] (c) {$C$};
+        \draw[thick] (a) -- (b) node[pos=0.5,draw=none,above] (s) {4};
+        \draw[thick] (a) -- (c) node[pos=0.5,draw=none,below] {10};
+        \draw[thick] (b) -- (c) node[pos=0.5,draw=none,above] {1};
+
+        \node[red,thick,draw,circle] at (s) (w) {};
+        \draw[red,thick] (w.south east) -- (w.north west) node[above left,red,draw=none] {1};
+    \end{tikzpicture}
+\end{figure}
+\begin{itemize}[nosep]
+    \item A decrease in link cost has to be fresh information
+    \item Network converges in $\bigO{d}$ steps ($d$ is the diameter)
+\end{itemize}
+
+\subsection{Bad news travels slowly}
+\begin{figure}[H]
+    \tikzsetnextfilename{badnews}
+    \begin{tikzpicture}[every node/.style={draw=blue,circle},node distance=2.5cm]
+        \node (a) {$A$};
+        \node[above right=1.5 and 2 of a] (b) {$B$};
+        \node[below right=1.5 and 2 of b] (c) {$C$};
+        \draw[thick] (a) -- (b) node[pos=0.5,draw=none,above] (s) {4};
+        \draw[thick] (a) -- (c) node[pos=0.5,draw=none,below] {10};
+        \draw[thick] (b) -- (c) node[pos=0.5,draw=none,above] {1};
+
+        \node[red,thick,draw,circle] at (s) (w) {};
+        \draw[red,thick] (w.south east) -- (w.north west) node[above left,red,draw=none] {12};
+    \end{tikzpicture}
+\end{figure}
+\begin{itemize}[nosep]
+    \item An increase in cost may cause confusion with old information
+    \item May form loops
+\end{itemize}
+\section{How to avoid loops}
+\begin{itemize}[nosep]
+    \item IP TTL field prevents a packet from living forever
+          \begin{itemize}[nosep]
+              \item Does \emph{not} repair a loop
+          \end{itemize}
+    \item Simple approach: consider a small cost $n$ (e.g. 16) to be infinity
+          \begin{itemize}[nosep]
+              \item After $n$ rounds decide node is unavailable
+              \item But rounds can be long, this takes time
+          \end{itemize}
+\end{itemize}
+\subsection{Better loop avoidance}
+\begin{itemize}[nosep]
+    \item Split Horizon
+          \begin{itemize}[nosep]
+              \item When sending updates to node $A$, don't include routes you learned from $A$
+              \item Prevents $B$ and $C$ from sending cost 2 to $A$
+          \end{itemize}
+    \item Split Horizon with Poison Reverse
+          \begin{itemize}[nosep]
+              \item Rather than advertising routes learned from $A$, explicitly include cost of $\infty$
+              \item Faster to break out of loops, but increases advertisement sizes
+          \end{itemize}
+\end{itemize}
+\subsubsection{Warning}
+\begin{itemize}[nosep]
+    \item Split Horizon/Split Horizon with Poison Reverse only helps between nodes
+          \begin{itemize}[nosep]
+              \item Can still get a loop with three nodes involved
+              \item Might need to delay advertising routes after changes, but affects convergence time
+          \end{itemize}
+\end{itemize}
+
+\section{Link State Routing}
+\begin{itemize}[nosep]
+    \item Strategy
+          \begin{itemize}[nosep]
+              \item send to all nodes information about directly connected neighbors
+          \end{itemize}
+    \item Link State Packet (LSP)
+          \begin{itemize}[nosep]
+              \item ID of the node that created the LSP
+              \item Cost of link to each directly connected neighbor
+              \item Sequence number (\texttt{SEQNO})
+              \item TTL
+          \end{itemize}
+\end{itemize}
+
+\subsection{Reliable Flooding}
+\begin{itemize}[nosep]
+    \item Store most recent LSP from each node
+          \begin{itemize}[nosep]
+              \item Ignore earlier versions of the same LSP
+          \end{itemize}
+    \item Forward LSP to all nodes but the one that sent it
+    \item Generate new LSP periodically
+          \begin{itemize}[nosep]
+              \item Increment \texttt{SEQNO}
+          \end{itemize}
+    \item Start at $\texttt{SEQNO}=0$ when reboot
+          \begin{itemize}[nosep]
+              \item If you hear your own packet with $\texttt{SEQNO} = n$, set your next \texttt{SEQNO} to $n + 1$
+          \end{itemize}
+    \item Decrement TTL of each stored LSP
+          \begin{itemize}[nosep]
+              \item Discard when $\texttt{TTL} = 0$
+          \end{itemize}
+\end{itemize}
+\subsection{Calculating best path}
+\nameref*{alg:dijkstra} computes the shortest path from node $s$ (``yourself'') to every other node in the graph. Let $\texttt{Nodes}$ denote the set of nodes in the graph, $\Call{Weight}{i, j}$ the weight of the edge between $i$ and $j$ ($\infty$ if there is no edge), $\Call{Cost}{n}$ the cost of the path from $s$ to $n$, and $\Call{Route}{n}$ the next node to visit in the path from $s$ to $n$.
+\begin{algorithm}[H]
+    \caption[Dijkstra's Algorithm]{\nameref*{alg:dijkstra}}
+    \label{alg:dijkstra}
+    \begin{algorithmic}[1]
+        \State $\texttt{unvisited} \gets \texttt{Nodes} - \set{s}$
+        \ForEach{$n\in \texttt{unvisited}$}
+        \State $\Call{Cost}{n} \gets \Call{Weight}{s, n}$
+        \If{$\Call{Weight}{s, n} < \infty$}
+        \State $\Call{Route}{n} \gets n$
+        \Else
+        \State $\Call{Route}{n} \gets \Null$
+        \EndIf
+        \EndForEach
+        \While{there are nodes in \texttt{unvisited}}
+        \State let $w$ be the node in \texttt{unvisited} with lowest value $\Call{Cost}{w}$
+        \State $\texttt{unvisited}.\Call{remove}{w}$
+        \ForEach{node $n\in\texttt{unvisited}$}
+        \If{$\Call{Cost}{w} + \Call{Weight}{w, n} < \Call{Cost}{n}$}
+        \State $\Call{Cost}{n} \gets \Call{Cost}{w} + \Call{Weight}{w, n}$
+        \State $\Call{Route}{n} \gets \Call{Route}{w}$
+        \EndIf
+        \EndForEach
+        \EndWhile
+    \end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Distance Vector vs. Link State}
+\begin{itemize}[nosep]
+    \item Number of messages (per node $v$ with degree $d$)
+          \begin{itemize}[nosep]
+              \item DV: $\bigO{d}$
+              \item LS: $\bigO{nd}$ for $n$ nodes in the system
+          \end{itemize}
+    \item Computation
+          \begin{itemize}[nosep]
+              \item DV: convergence time varies (e.g. count-to-infinity)
+              \item LS: $\bigO{n^2}$ with $\bigO{nd}$ messages
+          \end{itemize}
+    \item Robustness: what happens with malfunctioning router?
+          \begin{itemize}[nosep]
+              \item DV:
+                    \begin{itemize}[nosep]
+                        \item Nodes can advertise incorrect \emph{path} cost
+                        \item Others can use the cost, propagates through the network
+                    \end{itemize}
+              \item LS:
+                    \begin{itemize}[nosep]
+                        \item Nodes can advertise incorrect \emph{link} cost
+                    \end{itemize}
+          \end{itemize}
+\end{itemize}
+\subsubsection{Examples}
+\begin{itemize}[nosep]
+    \item RIPv2
+          \begin{itemize}[nosep]
+              \item Fairly simple implementation of DV
+              \item RFC 2453 (38 pages)
+          \end{itemize}
+    \item OSPF (Open Shortest Path First)
+          \begin{itemize}[nosep]
+              \item More complex link-state protocol
+              \item Adds notion of \emph{areas} for scalability
+              \item RFC 2328 (244 pages)
+          \end{itemize}
+\end{itemize}
+\subsubsection{RIPv2}
+\begin{itemize}[nosep]
+    \item Runs on UDP port 520
+    \item Link cost = 1
+    \item Periodic updates every 30 seconds, plus triggered updates
+    \item Relies on count-to-infinity to resolve loops
+          \begin{itemize}[nosep]
+              \item Maximum diameter 15 ($\infty = 16$)
+              \item Supports Split Horizon, Poison Reverse
+          \end{itemize}
+\end{itemize}
+\subsubsection{Packet Format}
+\begin{verbatim}
+0                   1                   2                   3
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| command (1) | version (1) |           must be zero (2)        |
++---------------+---------------+-------------------------------+
+|                                                               |
+~                         RIP Entry (20)                        ~
+|                                                               |
++---------------+---------------+---------------+---------------+
+\end{verbatim}
+\subsubsection{RIPv2 Entry}
+\begin{verbatim}
+0                   1                   2                   3
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| address family identifier (2) |      Route Tag (2)            |
++-------------------------------+-------------------------------+
+|                        IP address (4)                         |
++---------------------------------------------------------------+
+|                        Subnet Mask (4)                        |
++---------------------------------------------------------------+
+|                        Next Hop (4)                           |
++---------------------------------------------------------------+
+|                        Metric (4)                             |
++---------------------------------------------------------------+
+\end{verbatim}
+\subsubsection{Next Hop Field}
+\begin{itemize}[nosep]
+    \item Allows one router to advertise routes for multiple routers on the same subnet
+    \item Suppose only \texttt{XR1} talks RIPv2
+\end{itemize}
+\begin{verbatim}
+-----   -----   -----           -----   -----   -----
+|IR1|   |IR2|   |IR3|           |XR1|   |XR2|   |XR3|
+--+--   --+--   --+--           --+--   --+--   --+--
+  |       |       |               |       |       |
+--+-------+-------+---------------+-------+-------+--
+  <-------------RIP-2------------->
+\end{verbatim}
+\subsubsection{OSPFv2}
+\begin{itemize}[nosep]
+    \item Link state protocol
+    \item Runs directly over IP (protocol 89)
+          \begin{itemize}[nosep]
+              \item Has to provide its own reliability
+          \end{itemize}
+    \item All exchanges are authenticated
+    \item Adds notion of \emph{areas} for scalability
+\end{itemize}
+\section{Inter-Domain Routing}
+\subsection{Why Inter vs. Intra}
+\begin{itemize}[nosep]
+    \item Why not just use OSPF everywhere?
+          \begin{itemize}[nosep]
+              \item e.g. hierarchies of OSPF areas?
+              \item Hint: scaling is not the only limitation
+          \end{itemize}
+    \item BGP is a policy control and information hiding protocol
+          \begin{itemize}[nosep]
+              \item intra = trusted, inter = untrusted
+              \item Different policies by different ASs
+              \item Diffrent costs by different ASs
+          \end{itemize}
+\end{itemize}

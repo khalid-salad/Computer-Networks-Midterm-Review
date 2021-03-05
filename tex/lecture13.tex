@@ -1,0 +1,204 @@
+\chapter{Routing and Distance Vector Routing}
+\section{Inter and Intra-domain routing}
+\begin{itemize}[nosep]
+    \item Routing organized in two levels
+    \item Intra-domain routing
+          \begin{itemize}[nosep]
+              \item Complete knowledge, strive for \emph{optimal} paths
+              \item Scale to $\approx$ 100 networks.
+          \end{itemize}
+    \item Inter-domain routing
+          \begin{itemize}[nosep]
+              \item Aggregated knowledge, scale to internet
+              \item Dominated by \emph{policy}
+          \end{itemize}
+\end{itemize}
+\subsection{Network as a Graph}
+\begin{figure}[H]
+    \tikzsetnextfilename{network-graph}
+    \begin{tikzpicture}[every node/.style={draw,fill=white,circle,circular drop shadow=blue}]
+        \node (a) {$A$};
+        \node[below left=of a] (b) {$B$};
+        \node[below left=0.5cm and 2cm of b] (c) {$C$};
+        \node[below right=0.75cm and 1cm of a] (e) {$E$};
+        \node[right=3cm of c] (d) {$D$};
+        \node[above right=0.25cm and 2cm of e] (f) {$F$};
+
+        \draw (a) -- (b) node[pos=0.6,draw=none,fill=none,reset preactions,above] {3};
+        \draw (a) -- (e) node[pos=0.8,draw=none,fill=none,reset preactions,above] {1};
+        \draw (a) -- (f) node[pos=0.6,draw=none,fill=none,reset preactions,above] {6};
+        \draw (b) -- (c) node[pos=0.6,draw=none,fill=none,reset preactions,above] {4};
+        \draw (b) -- (e) node[pos=0.6,draw=none,fill=none,reset preactions,above] {1};
+        \draw (c) -- (d) node[pos=0.6,draw=none,fill=none,reset preactions,above] {9};
+        \draw (d) -- (e) node[pos=0.4,draw=none,fill=none,reset preactions,right] {1};
+        \draw (e) -- (f) node[pos=0.4,draw=none,fill=none,reset preactions,above] {2};
+
+        \path ([yshift=-0.1cm]c.south) rectangle ([xshift=0.1cm]f.east);
+    \end{tikzpicture}
+\end{figure}
+\begin{itemize}[nosep]
+    \item Nodes are routers
+    \item Assign \emph{cost} to each edge
+          \begin{itemize}[nosep]
+              \item Can be based on latency, bandwidth, queue length, \dots
+          \end{itemize}
+    \item Problem: find lowest-cost path between nodes
+          \begin{itemize}[nosep]
+              \item Each node individually computes route
+          \end{itemize}
+\end{itemize}
+\subsection{Basic Algorithms}
+\begin{itemize}[nosep]
+    \item Two classes of intra-domain routing algorithms
+    \item Distance Vector
+          \begin{itemize}[nosep]
+              \item Requires only local state
+              \item Harder to debug
+              \item Can suffer from loops
+          \end{itemize}
+    \item Link State
+          \begin{itemize}[nosep]
+              \item Each node has global view of the network
+              \item Simpler to debug
+              \item Requires global state
+          \end{itemize}
+\end{itemize}
+\subsubsection{Shortest Path Example}
+\begin{figure}[H]
+    \tikzsetnextfilename{shortest-path}
+    \begin{tikzpicture}[every node/.style={draw,circle,fill=gray!40}]
+        \node (a) {$A$};
+        \node[below right=1cm and 0.25cm of a] (b) {$B$};
+        \node[above right=of b] (d) {$D$};
+        \node[above right=1cm and 0.25cm of d] (c) {$C$};
+        \node[below right=1cm and 2cm of c] (e) {$E$};
+        \node[below left=2cm and 1cm of e] (f) {$F$};
+
+        \draw[blue,very thick] (a) -- (b) node[pos=0.5,draw=none,fill=none,left,black] {4};
+        \draw[blue,very thick] (a) -- (c) node[pos=0.5,draw=none,fill=none,above,black] {2};
+        \draw[blue,very thick] (a) -- (d) node[pos=0.5,draw=none,fill=none,below,black] {8};
+        \draw[blue,very thick] (b) -- (d) node[pos=0.5,draw=none,fill=none,right,black] {1};
+        \draw[blue,very thick] (c) -- (d) node[pos=0.5,draw=none,fill=none,right,black] {6};
+        \draw[blue,very thick] (c) -- (e) node[pos=0.5,draw=none,fill=none,above,black] {12};
+        \draw[blue,very thick] (d) -- (f) node[pos=0.5,draw=none,fill=none,below,black] {2};
+        \draw[blue,very thick] (e) -- (f) node[pos=0.5,draw=none,fill=none,right,black] {1};
+    \end{tikzpicture}
+\end{figure}
+\begin{table}[H]
+    \begin{tabular}{l l l l l l l l}
+        \multicolumn{8}{c}{Shortest Path}                                                    \\\toprule
+                               &     & \multicolumn{6}{c}{End}                               \\\cmidrule{2-8}
+                               &     & $A$                     & $B$ & $C$ & $D$ & $E$ & $F$ \\\cmidrule{3-8}
+        \multirow{6}{*}{Start} & $A$ &                         & 4   & 2   & 5   & 8   & 7   \\
+                               & $B$ & 4                       &     & 6   & 1   & 4   & 3   \\
+                               & $C$ & 2                       & 6   &     & 6   & 9   & 8   \\
+                               & $D$ & 5                       & 1   & 6   &     & 3   & 2   \\
+                               & $E$ & 8                       & 4   & 9   & 3   &     & 1   \\
+                               & $F$ & 7                       & 3   & 8   & 2   & 1   &
+    \end{tabular}
+\end{table}
+
+\section{Distance Vector}
+\begin{itemize}[nosep]
+    \item Local routing algorithm
+    \item Each  node maintains a set of triples
+          \begin{itemize}[nosep]
+              \item $\langle\texttt{Destination}, \texttt{Cost}, \texttt{NextHop}\rangle$
+          \end{itemize}
+    \item Exchange updates with neighbors
+          \begin{itemize}[nosep]
+              \item Periodically (seconds to minutes)
+              \item Whenever table changes (\emph{triggered} update)
+          \end{itemize}
+    \item Each update is a list of pairs
+          \begin{itemize}[nosep]
+              \item $\langle\texttt{Destinaton}, \texttt{Cost}\rangle$
+          \end{itemize}
+    \item Update local table if receive a ``beter'' route
+          \begin{itemize}[nosep]
+              \item Smaller cost
+          \end{itemize}
+    \item Refresh existing routes, delete if time out
+\end{itemize}
+
+\subsection{Calculating the best path}
+\begin{itemize}[nosep]
+    \item Bellman-Ford Equation
+    \item Let:
+          \begin{itemize}[nosep]
+              \item $D_a(b)$ denote the current best distance from $a$ to $b$
+              \item $c(a, b)$ denote the cost of a link from $a$ to $b$
+          \end{itemize}
+    \item Then $D_x(y) = \min_z\left(c(x, z) + D_z(y)\right)$
+    \item Routing messages contain $D$
+    \item $D$ is any additive metric
+          \begin{itemize}[nosep]
+              \item e.g. number of hops, queue length, delay
+              \item log can convert multiplicative metric into an additive one (e.g. probability of failure)
+          \end{itemize}
+\end{itemize}
+\url{https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm}
+
+\subsection{Adapting to Failures}
+\begin{figure}[H]
+    \tikzsetnextfilename{adapting-to-failures}
+    \begin{tikzpicture}[every node/.style={draw, circle},node distance=2cm]
+        \node[label=left:{$G,2,F$}] (a) {$A$};
+        \node[label=right:{$G,3,D$},above right=of a] (b) {$B$};
+        \node[label=right:{$G,2,D$},below right=1cm and 1cm of b] (c) {$C$};
+        \node[label=right:{$G,1,G$},below right=of c] (d) {$D$};
+        \node[label=below:{$G,1,G$},below=of a] (f) {$F$};
+        \node[right=3cm of f] (g) {$G$};
+        \node[label=right:{$G,3,A$},above right=of f] (e) {$E$};
+
+        \draw[blue,very thick,->] (b) -- (c);
+        \draw[blue,very thick,->] (c) -- (d);
+        \draw[blue,very thick,->] (d) -- (g);
+        \draw[blue,very thick,->] (a) -- (f);
+        \draw[blue,very thick,->] (a) -- (f);
+        \draw[blue,very thick,->] (f) -- (g);
+        \draw[blue,very thick,->] (e) -- (a);
+        \draw (a) -- (b);
+        \draw (a) -- (c);
+
+        \path (f) -- (g) node[circle,minimum size=0.5cm,pos=0.5,red,very thick,draw] (s) {};
+        \draw[red, very thick] (s.south east) -- (s.north west);
+    \end{tikzpicture}
+\end{figure}
+\begin{itemize}[nosep]
+    \item $F-G$ fails
+    \item $F$ sets distance to $G$ to $\infty$, propagates
+    \item $A$ sets distance to $G$ to $\infty$
+    \item $A$ receives periodic update from $C$ with 2-hop path to $G$
+    \item $A$ sets distance to $G$ to 3 and propagates
+    \item $F$ sets distance to $G$ to 4, through $A$
+\end{itemize}
+
+\subsection{Count-to-Infinity}
+\begin{figure}[H]
+    \tikzsetnextfilename{count-to-infinity}
+    \begin{tikzpicture}[every node/.style={draw, circle},node distance=2cm]
+        \node (a) {$A$};
+        \node[above right=of a] (b) {$B$};
+        \node[below right=1cm and 1cm of b] (c) {$C$};
+        \node[below right=of c] (d) {$D$};
+        \node[below=of a] (f) {$F$};
+        \node[right=3cm of f] (g) {$G$};
+        \node[above right=of f] (e) {$E$};
+
+        \draw (a) -- (b) -- (c) -- (d) -- (g) -- (f) -- (a);
+        \draw (a) -- (e);
+        \draw (a) -- (c);
+        \path (a) -- (e) node[circle,minimum size=0.5cm,pos=0.5,red,very thick,draw] (s) {};
+        \draw[red, very thick] (s.south east) -- (s.north west);
+    \end{tikzpicture}
+\end{figure}
+\begin{itemize}[nosep]
+    \item Link from $A$ to $E$ fails
+    \item $A$ advertises distance of infinity to $E$
+    \item $B$ and $C$ advertise a distance of 2 to $E$
+    \item $B$ decides it can reach $E$ in 3 hops through $C$
+    \item $A$ decides it can reach $E$ in 4 hops through $B$
+    \item $C$ decides it can reach $E$ in 5 hops through $A$, \dots
+    \item \emph{When does this stop?}
+\end{itemize}

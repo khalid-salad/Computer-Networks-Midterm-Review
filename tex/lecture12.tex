@@ -1,0 +1,35 @@
+\chapter{Overview of Routing}
+\section{Router Architecture}
+\begin{figure}[H]
+    \tikzsetnextfilename{router-architecture}
+    \begin{tikzpicture}
+        \node[draw, rectangle, very thick, fill=yellow!40, minimum width=4cm, minimum height=1cm] (router) {Router};
+        \node[draw, rectangle, very thick, minimum width=2cm, minimum height=0.8cm,align=center,right=of router] (fwdtbl) {Fwd\\Table};
+        \node[draw, rectangle, very thick, fill=yellow!40, minimum width=4cm, minimum height=1cm,right=of fwdtbl] (forwarder) {Forwarder};
+        \node[draw, rectangle, very thick, minimum width=12cm, minimum height=1cm,align=center,below=of fwdtbl] (link) {Link Layer};
+        \node[above=of router,align=center] {Control Plane\\(Routing)};
+        \node[above=of forwarder,align=center] {Data Plane\\(Forwarding)};
+
+        \draw[very thick,<->] (router.south) -- ([yshift=-1cm]router.south);
+        \draw[very thick,<->] (forwarder.south) -- ([yshift=-1cm]forwarder.south);
+        \draw[very thick,->] (router.east) -- (fwdtbl);
+        \draw[very thick,->] (fwdtbl.east) -- (forwarder);
+        \draw[fill] ([xshift=-0.25cm,yshift=2cm]fwdtbl.north) rectangle ([xshift=0.25cm]fwdtbl.north);
+        \draw[fill] ([xshift=-0.25cm,yshift=-1cm]fwdtbl.south) rectangle ([xshift=0.25cm]fwdtbl.south);
+    \end{tikzpicture}
+\end{figure}
+\section{Routing}
+\begin{itemize}[nosep]
+    \item Routing is the process of updating forwarding tables
+          \begin{itemize}[nosep]
+              \item Routers exchange messages about routers or networks they can reach
+              \item Goal: find optimal route for every destination
+              \item \dots or maybe a good route, or \emph{any} route (depending on scale)
+          \end{itemize}
+    \item Challenges
+          \begin{itemize}[nosep]
+              \item Dynamic topology
+              \item Decentralized
+              \item Scale
+          \end{itemize}
+\end{itemize}
