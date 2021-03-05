@@ -1,0 +1,180 @@
+\chapter{TCP Friendliness and Getting Help from the Network}
+\section{TCP Friendliness}
+\begin{itemize}[nosep]
+    \item Can other protocols co-exist with TCP?
+          \begin{itemize}[nosep]
+              \item e.g. if you want to write a video streaming app using UDP, how to do congestion control?
+          \end{itemize}
+    \item Equation-based Congestion Control
+          \begin{itemize}[nosep]
+              \item Instead of implementing TCP's CC, estimate the rate at which TCP would send. Function of what?
+              \item RTT, MSS, Loss
+          \end{itemize}
+    \item Measure RTT, Loss, send at that rate!
+\end{itemize}
+\subsection{TCP Throughput}
+\begin{itemize}[nosep]
+    \item Assume a TCP connection of window $W$, rount-trip time of \texttt{RTT}, segment size of \texttt{MSS}
+          \begin{itemize}[nosep]
+              \item Sending Rate $S = W \times \sfrac{\texttt{MSS}}{\texttt{RTT}}$ \textcolor{red}{(1)}
+          \end{itemize}
+    \item Drop $W = \sfrac{W}{2}$
+          \begin{itemize}[nosep]
+              \item grows by $\texttt{MSS} \sfrac{W}{2}$ RTTs, until another drop at $W\approx W$
+          \end{itemize}
+    \item Average window then $0.75\times S$
+          \begin{itemize}[nosep]
+              \item From (1), $S = 0.75 W \sfrac{\texttt{MSS}}{\texttt{RTT}}$ \textcolor{red}{(2)}
+          \end{itemize}
+    \item Loss rate is 1 in number of packets between losses:
+          \begin{align*}\texttt{Loss} &= \frac{1}{1+\left(\sfrac{W}{2} + \sfrac{W}{2} + 1 + \sfrac{W}{2} + 2 + \dots + W\right)}\\&=\frac{1}{\sfrac{3}{8}W^2}\textcolor{red}{(3)}\end{align*}
+    \item $\texttt{Loss} = \sfrac{8}{(3W^2)} \implies W = \sqrt{\frac{8}{3\cdot\texttt{Loss}}}$ \textcolor{red}{(4)}
+    \item Substituting (4) in (2), $S = 0.75 W \sfrac{\texttt{MSS}}{\texttt{RTT}}$
+          \[\texttt{Throughput} \approx 1.22\times\frac{\texttt{MSS}}{\texttt{RTT}\cdot\sqrt{\texttt{Loss}}}\]
+    \item Equation-based rate control can be TCP friendly and have better properties, e.g., small jitter, fast ramp-up\dots
+\end{itemize}
+
+\[W = \sqrt{\frac{8}{3p}}\]
+Substitute $W$ into the bandwidth equation below:
+\[\texttt{BW} = \frac{\text{data per cycle}}{\text{time per cycle}} = \frac{\texttt{MSS}\cdot\frac{3}{8}W^2}{\texttt{RTT}\cdot\frac{W}{2}} = \frac{\sfrac{\texttt{MSS}}{p}}{\texttt{RTT}\sqrt{\frac{2}{3p}}}\]
+Collect the constants in one term, $C=\sqrt{\sfrac{3}{2}}$, then we arrive at
+\[\texttt{BW} = \frac{\texttt{MSS}}{\texttt{RTT}}\frac{C}{\sqrt{p}}\]
+
+\subsection{What happens when Link is Lossy}
+\begin{itemize}[nosep]
+    \item $\text{Throughput} = \sfrac{1}{\sqrt{\text{Loss}}}$
+\end{itemize}
+\subsubsection{What can we do about it?}
+\begin{itemize}[nosep]
+    \item Two types of losses: congestion and corrupt
+    \item One option: mask corruption losses from TCP
+          \begin{itemize}[nosep]
+              \item Retranmissions at the link layer
+              \item e.g. snoop TCP: intercept duplicate acknowledgments, retransmit locally, filter them from the sender
+          \end{itemize}
+    \item Another option:
+          \begin{itemize}[nosep]
+              \item Tell the sender about the cause for the drop
+              \item Requires modification of the TCP endpoints
+          \end{itemize}
+\end{itemize}
+\subsection{Congestion Avoidance}
+\begin{itemize}[nosep]
+    \item TCP creates congestion to then back off
+          \begin{itemize}[nosep]
+              \item Queues at bottleneck link are often full: increased delay
+              \item Sawtooth pattern: jitter
+          \end{itemize}
+    \item Alternative strategy
+          \begin{itemize}[nosep]
+              \item Predict when congestion is about to happen
+              \item Reduce rate early
+          \end{itemize}
+    \item Two approaches
+          \begin{itemize}[nosep]
+              \item Host centric: TCP vegas
+              \item Router-centric: RED, DECBit
+          \end{itemize}
+\end{itemize}
+\subsubsection{TCP Vegas}
+\begin{itemize}[nosep]
+    \item Idea: source watches for sign that router's queue is building up (e.g. sending rate flattens)
+    \item Compare Actual Rate ($A$) with Expected Rate ($E$)
+          \begin{itemize}[nosep]
+              \item If $E - A > \beta$, decrease \texttt{cwnd} linearly: $A$ isn't responding
+              \item If $E - A < \alpha$, increase \texttt{cwnd} lienarly: room for $A$ to grow
+          \end{itemize}
+\end{itemize}
+\subsubsection{Vegas}
+\begin{itemize}[nosep]
+    \item Shorter router queues
+    \item Lower jitter
+    \item Problem:
+          \begin{itemize}[nosep]
+              \item Doesn't compete well with Reno. Why?
+              \item Reacts earlier, Reno is more aggressive, ends up with higher bandwidth\dots
+          \end{itemize}
+\end{itemize}
+\section{Help from the network}
+\begin{itemize}[nosep]
+    \item What if routers could \emph{tell} TCP that congestion is happening?
+          \begin{itemize}[nosep]
+              \item Congestion causes queues to grow: rate mismatch
+          \end{itemize}
+    \item TCP responds to drops
+          \begin{itemize}[nosep]
+              \item Idea: Random Early Drop (RED)
+                    \begin{itemize}[nosep]
+                        \item Rather than wait for queue to become full, drop packet with some probability that increases with queue length
+                        \item TCP will react by reducing \texttt{cwnd}
+                        \item Could also mark instead of dropping: ECN
+                    \end{itemize}
+          \end{itemize}
+\end{itemize}
+
+\subsection{RED Details}
+\begin{itemize}[nosep]
+    \item Computer average queue length (EWMA)
+          \begin{itemize}[nosep]
+              \item Don't want to react to very quick fluctuations
+          \end{itemize}
+\end{itemize}
+\subsubsection{RED Drop Probability}
+\begin{itemize}[nosep]
+    \item Define two thresholsd: \texttt{MinThresh}, \texttt{MaxThresh}
+    \item Drop probability:
+\end{itemize}
+\begin{figure}[H]
+    \tikzsetnextfilename{red-drop-prob}
+    \begin{tikzpicture}
+        \begin{axis}[
+                xmin=0,xmax=6.25,
+                ymin=0,ymax=1.5,
+                axis lines = left,
+                xtick={1,3},
+                ytick={0.50,1},
+                xticklabels={\texttt{MinThresh}, \texttt{MaxThresh}},
+                yticklabels={\texttt{MaxP}, 1.0},
+                ylabel = $P$ (drop),
+                xlabel = \texttt{AvgLen},
+                x label style={at={(axis description cs:1.0,0.1)},anchor=north},
+                y label style={at={(axis description cs:0.1,1.1)},rotate=-90,anchor=north},
+            ]
+            \addplot[color=blue,domain=0:1,thick]{0};
+            \addplot[color=blue,domain=1:3,thick]{0.25*x-0.25};
+            \addplot[color=blue,domain=3:6,thick]{1};
+
+            \draw[blue,thick] (3,0.5) -- (3,1);
+        \end{axis}
+    \end{tikzpicture}
+\end{figure}
+\begin{itemize}[nosep]
+    \item Improvements to spread drops (see book)
+\end{itemize}
+\subsubsection{RED Avantages}
+\begin{itemize}[nosep]
+    \item Probability of dropping a packet of a particular flow is roughly proportional to the share of the bandwidth that flow is currently getting
+    \item Higher network utilization with low delays
+    \item Average queue length small, but can absorb bursts
+    \item ECN
+          \begin{itemize}[nosep]
+              \item Similar to RED, but router sends bit in the packet
+              \item Must be supported by both ends
+              \item Avoids retransmissions optionally dropped packets
+          \end{itemize}
+\end{itemize}
+\subsection{More help from the network}
+\begin{itemize}[nosep]
+    \item Problem: still vulnerable to malicious flows!
+          \begin{itemize}[nosep]
+              \item RED will drop packets from large flows preferentially, but they don't have to respond appropriately
+          \end{itemize}
+    \item Idea: Multiple Queues (one per flow)
+          \begin{itemize}[nosep]
+              \item Serve queues in Round-Robin
+              \item Nagle (1987)
+              \item Good: protects against misbehaving flows
+              \item Disadvantage?
+              \item \emph{Flows with larger packets get higher bandwidth}
+          \end{itemize}
+\end{itemize}
