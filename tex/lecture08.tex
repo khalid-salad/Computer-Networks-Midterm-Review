@@ -1,0 +1,172 @@
+\chapter{Flow and Congestion Control}
+\section{Flow Control}
+\subsection{First Goal}
+\begin{itemize}
+    \item We should not send more data than the receiver can take: \emph{flow control}
+    \item Data is sent in MSS-sized segments
+          \begin{itemize}
+              \item Chosen to avoid fragmentation
+          \end{itemize}
+    \item Sender can delay sends to get larger segments
+    \item When to send data?
+    \item How much data to send?
+\end{itemize}
+\subsection{Flow Control}
+\begin{itemize}
+    \item Part of TCP specification (even before 1988)
+    \item Goal: don't send more data than the receiver can handle
+    \item Sliding window protocol
+    \item Receiver uses window header field to tell sender how much space it has
+    \item Receiver: \[\texttt{AdvertisedWindow} = \texttt{MaxRcvBuffer} - ((\texttt{NextByteExpected} - 1) - \texttt{LastByteRead})\]
+    \item Sender:
+          \begin{align*}
+               & \texttt{LastByteSent} - \texttt{LastByteAcked}     \leq \texttt{AdvertisedWindow}                       \\
+               & \texttt{EffectiveWindow}                           = \texttt{AdvertisedWindow} - \texttt{BytesInFlight} \\
+               & \texttt{LastByteWritten} - \texttt{LastByteAcked}  \leq \texttt{MaxSendBuffer}
+          \end{align*}
+    \item Advertised window can fall to 0
+          \begin{itemize}
+              \item How?
+              \item Sender eventually stops sending, blocks application
+          \end{itemize}
+    \item Sender keeps sendnig 1-byte segments until windows comes back $> 0$
+    \item 50 students have ssh window open to bayou and are typing 1 character per second
+    \item How many packets are read and written by bayou per second?
+          \begin{itemize}
+              \item Consider minimum frame size
+          \end{itemize}
+\end{itemize}
+\subsubsection{When to Transmit?}
+\begin{algorithm}[H]
+    \caption[Nagle's Algorithm]{\nameref*{alg:nagle} -- reduce the overhead of small packets}
+    \label{alg:nagle}
+    \begin{algorithmic}[1]
+        \If{available data and $\texttt{window} \geq \texttt{MSS}$}
+        \State send an \texttt{MSS} segment
+        \Else
+        \If{there is unAcked data in flight}
+        \State buffer the new data until ACK arrives
+        \Else
+        \State send all new data now
+        \EndIf
+        \EndIf
+    \end{algorithmic}
+\end{algorithm}
+\begin{itemize}
+    \item Receiver should avoid advertising a window $\leq\texttt{MSS}$ after advertising a window of 0
+\end{itemize}
+\url{https://tools.ietf.org/html/rfc896}
+
+\subsection{Delayed Acknowledgements}
+\begin{itemize}
+    \item Goal: piggy-back ACKs on data
+          \begin{itemize}
+              \item Delay ACK for 200ms in case application sends data
+              \item If more data received, immediately ACK second segment
+              \item Note: never delay duplicate ACKs (if missing a segment)
+          \end{itemize}
+    \item Warning: can interact \emph{very} badly with Nagle
+          \begin{itemize}
+              \item Temporary deadlock
+              \item Can disable Nagle with TCP\_NODELAY
+              \item Application can also avoid many small writes
+          \end{itemize}
+\end{itemize}
+\url{https://en.wikipedia.org/wiki/TCP_delayed_acknowledgment}
+
+\url{https://developers.slashdot.org/comments.pl?sid=174457&cid=14515105}
+
+\subsubsection{Turning off Nagle's Algorithm}
+\emph{``In general, since Nagle's algorithm is only a defense against careless applications, disabling Nagle’s algorithm will not benefit most carefully written applications that take proper care of buffering. Disabling Nagle’s algorithm will enable the application to have many small packets in flight on the network at once, instead of a smaller number of large packets, which may increase load on the network, and may or may not benefit the application performance.''}
+
+\begin{itemize}
+    \item Who wants to turn the algorithm off?
+          \begin{itemize}
+              \item Search on Google and find out.
+          \end{itemize}
+\end{itemize}
+\url{https://en.wikipedia.org/wiki/Nagle's_algorithm}
+
+\subsection{Limitations of Flow Control}
+\begin{itemize}
+    \item Network may be the bottleneck
+    \item Signal from receiver not enough!
+    \item Sending too fast will cause queue overflows, heavy packet loss
+    \item Flow control provides \emph{correctness}
+    \item Need more for performance: congestion control
+\end{itemize}
+
+\subsection{A Short History of TCP}
+\begin{itemize}
+    \item 1974: 3-way handshake
+    \item 1978: IP and TCP split
+    \item 1983: January 1st, ARPAnet switches to TCP/IP
+    \item 1984: Nagle predicts congestion collapses
+    \item 1986: Internet begins to suffer congestion collapses
+          \begin{itemize}
+              \item LBL to Berkeley drops from 32Kbps to 40bps
+          \end{itemize}
+    \item 1987/8: Van Jacobsen fixes TCP, publishes sminal paper: (TCP Tahoe)
+    \item 1990: Fast transmit and fast recovery added (TCP Reno)
+\end{itemize}
+
+\subsection{Second Goal}
+\begin{itemize}
+    \item We should not send more data than the network can take: \emph{congestion control}
+\end{itemize}
+
+\section{TCP Congestion Control}
+\begin{itemize}
+    \item 3 Key Challenges
+          \begin{itemize}
+              \item Determining the available capacity in the first place
+              \item Adjusting to changes in the available capacity
+              \item Sharing capacity between flows
+          \end{itemize}
+    \item Idea
+          \begin{itemize}
+              \item Each source determines network capacity for itself
+              \item Rate is determined by window size
+              \item Uses implicit feedback (drops, delay)
+              \item ACKs page transmission (self-clocking)
+          \end{itemize}
+\end{itemize}
+
+\subsection{Dealing with Congestion}
+\begin{itemize}
+    \item TCP keeps congestion and flow control windows
+          \begin{itemize}
+              \item Max packets in flight is lesser of two
+          \end{itemize}
+    \item Sending rate: $\approx\sfrac{\texttt{Window}}{\texttt{RTT}}$
+    \item The key here is how to set the congestion window to respond to congestion signals
+\end{itemize}
+
+\subsection{Starting Up}
+\begin{itemize}
+    \item Before TCP Tahoe
+          \begin{itemize}
+              \item On connection, nodes send full (rcv) window of packets
+              \item Retransmit packet immediately after its timer expires
+          \end{itemize}
+    \item Result: window-sized bursts of packets in network
+\end{itemize}
+
+\subsection{Determining Initial Capacity}
+\begin{itemize}
+    \item Question: how to set $w$ initially?
+          \begin{itemize}
+              \item Should start at 1MSS (to avoid overloading the network)
+              \item Could increase additively until we hit congestion
+              \item May be too slow on fast network
+          \end{itemize}
+    \item Start by doubling with each RTT
+          \begin{itemize}
+              \item Then will dump at most one extra window int network
+              \item This is called \emph{slow start}
+          \end{itemize}
+    \item \emph{Slow start}, this sounds quite fast!
+          \begin{itemize}
+              \item In contrast to initial algorithm: sender would dump entire \emph{control flow} window at once
+          \end{itemize}
+\end{itemize}
