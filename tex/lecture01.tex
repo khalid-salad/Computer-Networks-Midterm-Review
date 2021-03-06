@@ -9,6 +9,9 @@
               \item TV/Refrigerator
               \item Cellphones
           \end{itemize}
+          \begin{figure}[H]
+              \includegraphics[width=0.25\textwidth]{lazy/internet.png}
+          \end{figure}
     \item Goal: Connect all the nodes to each other
     \item Solutions
           \begin{itemize}[nosep]
@@ -55,33 +58,30 @@
               \item State in the network
           \end{itemize}
 \end{itemize}
-\begin{multicols}{2}
-    \begin{figure}[H]
-        \tikzsetnextfilename{circuit-switching}
-        \begin{tikzpicture}[every node/.style={rectangle, draw=blue!60!white, minimum size=1cm}]
-            \node (a) {$A$};
-            \node[below=of a] (b) {$B$};
+\begin{figure}[H]
+    \tikzsetnextfilename{circuit-switching}
+    \begin{tikzpicture}[every node/.style={rectangle, draw=blue!60!white, minimum size=1cm}]
+        \node (a) {$A$};
+        \node[below=of a] (b) {$B$};
 
-            \node[below right=-0.4cm and 1cm of a, minimum width=3cm, minimum height=2cm] (s) {Switch};
+        \node[below right=-0.4cm and 1cm of a, minimum width=3cm, minimum height=2cm] (s) {Switch};
 
-            \node[above right=-0.4cm and 1cm of s] (c) {$C$};
-            \node[below right=-0.4cm and 1cm of s] (d) {$D$};
+        \node[above right=-0.4cm and 1cm of s] (c) {$C$};
+        \node[below right=-0.4cm and 1cm of s] (d) {$D$};
 
-            \draw[blue!60!white] (a) -- (s);
-            \draw[blue!60!white] (b) -- (s);
-            \draw[blue!60!white] (c) -- (s);
-            \draw[blue!60!white] (d) -- (s);
-        \end{tikzpicture}
-    \end{figure}
-
-    \begin{table}[H]
-        \begin{tabular}{l l}
-            Time                      & Circuit \\\toprule
-            $T$, $3T$, $5T$, $\dots$  & $A - D$ \\
-            $2T$, $4T$, $6T$, $\dots$ & $B - C$
-        \end{tabular}
-    \end{table}
-\end{multicols}
+        \draw[blue!60!white] (a) -- (s);
+        \draw[blue!60!white] (b) -- (s);
+        \draw[blue!60!white] (c) -- (s);
+        \draw[blue!60!white] (d) -- (s);
+    \end{tikzpicture}
+\end{figure}
+\begin{table}[H]
+    \begin{tabular}{l l}
+        Time                      & Circuit \\\toprule
+        $T$, $3T$, $5T$, $\dots$  & $A - D$ \\
+        $2T$, $4T$, $6T$, $\dots$ & $B - C$
+    \end{tabular}
+\end{table}
 \begin{itemize}[nosep]
     \item Natural for predictable data races
     \item Can guarantee certain level of services

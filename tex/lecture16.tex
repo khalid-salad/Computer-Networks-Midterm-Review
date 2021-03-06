@@ -3,6 +3,34 @@
 \begin{itemize}
     \item Longest Prefix Match
 \end{itemize}
-\begin{figure}
+\begin{figure}[H]
     \includegraphics[width=\textwidth]{lazy/longestprefix.png}
 \end{figure}
+
+\subsection{Some BGP Challenges}
+\begin{itemize}
+    \item Convergence
+    \item Traffic engineering
+          \begin{itemize}
+              \item How to assure certain routes are selected
+          \end{itemize}
+    \item Scaling (route reflectors)
+    \item Security
+\end{itemize}
+
+\subsection{Convergence}
+\begin{itemize}
+    \item Given a change, how long until the network re-stabilizes?
+          \begin{itemize}
+              \item Depends on change: sometimes never
+              \item Open research problem: ``tweak and pray''
+              \item Distributed setting is challenging
+          \end{itemize}
+    \item Some reasons for change
+          \begin{itemize}
+              \item Topology changes
+              \item BGP session failures
+              \item Changes in policy
+              \item Conflicts between policies can cause oscillation
+          \end{itemize}
+\end{itemize}
