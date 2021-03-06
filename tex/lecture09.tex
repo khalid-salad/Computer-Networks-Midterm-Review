@@ -1,5 +1,5 @@
-\chapter{Flow and Congestion Control (continued)}
-\section{Congestion Control}
+\section{Flow and Congestion Control (continued)}
+\subsection{Congestion Control}
 \subsection{Slow Start Implementation}
 \begin{itemize}[nosep]
     \item Let $w$ be the size of the window in \emph{bytes}
@@ -41,7 +41,7 @@
           \end{itemize}
 \end{itemize}
 
-\subsubsection{How much to reduce window?}
+\subsection{How much to reduce window?}
 \begin{itemize}[nosep]
     \item What happens under congestion?
           \begin{itemize}[nosep]
@@ -54,7 +54,7 @@
           \end{itemize}
 \end{itemize}
 
-\subsubsection{How to use extra capacity?}
+\subsection{How to use extra capacity?}
 \begin{itemize}[nosep]
     \item Network signals congestion, but says nothing of underitilization
           \begin{itemize}[nosep]
@@ -72,7 +72,7 @@
           \end{itemize}
 \end{itemize}
 
-\subsubsection{Chiu Jain Phase Plots}
+\subsection{Chiu Jain Phase Plots}
 \begin{figure}[H]
     \tikzsetnextfilename{chiu-jain-fair}
     \begin{tikzpicture}
@@ -180,7 +180,7 @@
     \end{tikzpicture}
 \end{figure}
 
-\subsubsection{AIMD Implementation}
+\subsection{AIMD Implementation}
 \begin{itemize}[nosep]
     \item In practice, send \texttt{MSS}-sized segments
           \begin{itemize}[nosep]
@@ -204,7 +204,7 @@
           \end{itemize}
 \end{itemize}
 
-\subsubsection{AIMD Trace}
+\subsection{AIMD Trace}
 \begin{itemize}[nosep]
     \item AIMD produces sawtooth pattern of window size
           \begin{itemize}[nosep]
@@ -241,7 +241,7 @@
     \end{tikzpicture}
 \end{figure}
 
-\subsubsection{Putting it Together}
+\subsection{Putting it Together}
 \begin{itemize}[nosep]
     \item TCP has two states: Slow Start (SS) and Congestion Avoidance (CA)
     \item A window size threshold governs the state transition
@@ -285,7 +285,7 @@
           \end{itemize}
 \end{itemize}
 
-\subsubsection{Originally}
+\subsection{Originally}
 \begin{itemize}[nosep]
     \item $\texttt{EstRTT} = (1 - \alpha) \times \texttt{EstRTT} + \alpha\texttt{SampleRTT}$
     \item $\texttt{Timeout} = 2 \times \texttt{EstRTT}$
@@ -299,7 +299,7 @@
               \item does not take variance into account: too aggressive when there is more load!
           \end{itemize}
 \end{itemize}
-\subsubsection{Jacobson/Karels Algorithm (Taho)}
+\subsection{Jacobson/Karels Algorithm (Taho)}
 \begin{itemize}[nosep]
     \item $\texttt{EstRTT} = (1 - \alpha)\times\texttt{EstRTT} + \alpha\times\texttt{SampleRTT}$
           \begin{itemize}[nosep]
@@ -312,7 +312,7 @@
     \item $\texttt{Timeout} = \texttt{EstRTT} + 4\cdot\texttt{DevRTT}$
     \item For successive retransmissions: use exponential backoff
 \end{itemize}
-\subsubsection{Slow start every time?!}
+\subsection{Slow start every time?!}
 \begin{itemize}[nosep]
     \item Losses have large effect on throughput
     \item Fast Recovery (TCP Reno)
@@ -323,7 +323,7 @@
               \item Stay in Congestion Avoidance mode
           \end{itemize}
 \end{itemize}
-\subsubsection{3 Challenges Revisited}
+\subsection{3 Challenges Revisited}
 \begin{itemize}[nosep]
     \item Determining the available capacity in the first place
           \begin{itemize}[nosep]

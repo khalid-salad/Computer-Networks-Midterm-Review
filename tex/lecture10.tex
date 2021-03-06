@@ -1,5 +1,5 @@
-\chapter{TCP Friendliness and Getting Help from the Network}
-\section{TCP Friendliness}
+\section{TCP Friendliness and Getting Help from the Network}
+\subsection{TCP Friendliness}
 \begin{itemize}[nosep]
     \item Can other protocols co-exist with TCP?
           \begin{itemize}[nosep]
@@ -44,7 +44,7 @@ Collect the constants in one term, $C=\sqrt{\sfrac{3}{2}}$, then we arrive at
 \begin{itemize}[nosep]
     \item $\text{Throughput} = \sfrac{1}{\sqrt{\text{Loss}}}$
 \end{itemize}
-\subsubsection{What can we do about it?}
+\subsection{What can we do about it?}
 \begin{itemize}[nosep]
     \item Two types of losses: congestion and corrupt
     \item One option: mask corruption losses from TCP
@@ -76,7 +76,7 @@ Collect the constants in one term, $C=\sqrt{\sfrac{3}{2}}$, then we arrive at
               \item Router-centric: RED, DECBit
           \end{itemize}
 \end{itemize}
-\subsubsection{TCP Vegas}
+\subsection{TCP Vegas}
 \begin{itemize}[nosep]
     \item Idea: source watches for sign that router's queue is building up (e.g. sending rate flattens)
     \item Compare Actual Rate ($A$) with Expected Rate ($E$)
@@ -85,7 +85,7 @@ Collect the constants in one term, $C=\sqrt{\sfrac{3}{2}}$, then we arrive at
               \item If $E - A < \alpha$, increase \texttt{cwnd} lienarly: room for $A$ to grow
           \end{itemize}
 \end{itemize}
-\subsubsection{Vegas}
+\subsection{Vegas}
 \begin{itemize}[nosep]
     \item Shorter router queues
     \item Lower jitter
@@ -95,7 +95,7 @@ Collect the constants in one term, $C=\sqrt{\sfrac{3}{2}}$, then we arrive at
               \item Reacts earlier, Reno is more aggressive, ends up with higher bandwidth\dots
           \end{itemize}
 \end{itemize}
-\section{Help from the network}
+\subsection{Help from the network}
 \begin{itemize}[nosep]
     \item What if routers could \emph{tell} TCP that congestion is happening?
           \begin{itemize}[nosep]
@@ -119,7 +119,7 @@ Collect the constants in one term, $C=\sqrt{\sfrac{3}{2}}$, then we arrive at
               \item Don't want to react to very quick fluctuations
           \end{itemize}
 \end{itemize}
-\subsubsection{RED Drop Probability}
+\subsection{RED Drop Probability}
 \begin{itemize}[nosep]
     \item Define two thresholsd: \texttt{MinThresh}, \texttt{MaxThresh}
     \item Drop probability:
@@ -151,7 +151,7 @@ Collect the constants in one term, $C=\sqrt{\sfrac{3}{2}}$, then we arrive at
 \begin{itemize}[nosep]
     \item Improvements to spread drops (see book)
 \end{itemize}
-\subsubsection{RED Avantages}
+\subsection{RED Avantages}
 \begin{itemize}[nosep]
     \item Probability of dropping a packet of a particular flow is roughly proportional to the share of the bandwidth that flow is currently getting
     \item Higher network utilization with low delays

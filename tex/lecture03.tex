@@ -1,5 +1,5 @@
-\chapter{HTTP and the Web}
-\section{Precursors}
+\section{HTTP and the Web}
+\subsection{Precursors}
 \begin{itemize}[nosep]
     \item 1945, Vannevar Bush, Memex:
           \begin{itemize}[nosep]
@@ -93,7 +93,7 @@
     \item \url{http://en.wikipedia.org/wiki/Domain_name#Top-level_domains}
     \item \url{http://www.uh.edu/search/?q=computer+science&x=0&y=0}
 \end{itemize}
-\section{HTTP}
+\subsection{HTTP}
 \begin{itemize}[nosep]
     \item Important properties
           \begin{itemize}[nosep]
@@ -132,7 +132,7 @@
               \item e.g. desired language
           \end{itemize}
 \end{itemize}
-\subsubsection{Sample Browser Request}
+\subsection{Sample Browser Request}
 \begin{minted}{http}
     GET / HTTP/1.1
     Host: localhost:8000
@@ -144,7 +144,7 @@
     (empty line)
 \end{minted}
 
-\subsubsection{Sample HTTP Response}
+\subsection{Sample HTTP Response}
 \begin{minted}{http}
     HTTP/1.0 200 OK
     Date: Wed, 25 Jan 2012 08:11:09 GMT
@@ -242,7 +242,7 @@ Where to ﬁnd oﬃcial HTTP speciﬁcaton?
           \end{itemize}
 \end{itemize}
 
-\subsubsection{Small Requests}
+\subsection{Small Requests}
 \begin{itemize}[nosep]
     \item Latency matters
     \item RTT dominates
@@ -288,7 +288,7 @@ Where to ﬁnd oﬃcial HTTP speciﬁcaton?
               \item \url{https://en.wikipedia.org/wiki/HTTP_pipelining}
           \end{itemize}
 \end{itemize}
-\subsubsection{Larger Objects}
+\subsection{Larger Objects}
 \begin{itemize}
     \item Problem is throughput in bottleneck link
     \item Solution: HTTP Proxy Caching

@@ -1,5 +1,5 @@
-\chapter{DNS and P2P}
-\section{DNS}
+\section{DNS and P2P}
+\subsection{DNS}
 \subsection{Structure of a DNS Message}
 \begin{Verbatim}[commandchars=\\\{\}]
     \textcolor{blue}{+---------------------+}
@@ -23,7 +23,7 @@
     \item Authority allows for delegation
     \item Additional for glue, other RRs client might need
 \end{itemize}
-\subsubsection{Header Format}
+\subsection{Header Format}
 \begin{Verbatim}[commandchars=\\\{\}]
     \textcolor{blue}{                                1  1  1  1  1  1}
     \textcolor{blue}{  0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5}
@@ -117,7 +117,7 @@
               \item DNSSEC extension will allow you to verify
           \end{itemize}
 \end{itemize}
-\subsubsection{Cache Poisoning}
+\subsection{Cache Poisoning}
 \begin{itemize}[nosep]
     \item Suppose you can tronl evil.com. You receive a query for www.evil.com and reply
           \begin{Verbatim}[commandchars=\\\{\}]
@@ -188,7 +188,7 @@
               \item Circumvents bailiwick checking
           \end{itemize}
 \end{itemize}
-\subsubsection{Countermeasures}
+\subsection{Countermeasures}
 \begin{itemize}[nosep]
     \item Randomize ID
           \begin{itemize}[nosep]
@@ -217,7 +217,7 @@
               \item \url{https://en.wikipedia.org/wiki/Round-robin_DNS}
           \end{itemize}
 \end{itemize}
-\section{Peer-to-Peer}
+\subsection{Peer-to-Peer}
 \subsection{Client-Server Bottlenecks}
 \begin{itemize}[nosep]
     \item Download time can scale linearly ($\bigO{n}$ with $n$ clients)
@@ -244,7 +244,7 @@
               \item With large heterogeneity (content, storage, bandwidth, \dots)
           \end{itemize}
 \end{itemize}
-\subsubsection{3 Key Requirements}
+\subsection{3 Key Requirements}
 \begin{itemize}[nosep]
     \item P2P Systems do Three things:
           \begin{enumerate}[nosep]
@@ -316,7 +316,7 @@
               \item End: don't get stuck (parallel downloads of last pieces)
           \end{itemize}
 \end{itemize}
-\subsubsection{BitTorrent Tracker Files}
+\subsection{BitTorrent Tracker Files}
 \begin{itemize}[nosep]
     \item Torrent file (.torrent) describes files to download
           \begin{itemize}[nosep]

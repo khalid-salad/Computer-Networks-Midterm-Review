@@ -1,5 +1,5 @@
-\chapter{Transport Protocols}
-\section{UDP -- User Datagram Protocol}
+\section{Transport Protocols}
+\subsection{UDP -- User Datagram Protocol}
 \begin{itemize}[nosep]
     \item Unreliable, unordered datagram service
     \item Adds multiplexing checksum
@@ -31,7 +31,7 @@
         \node at (6, 0.2) {31};
     \end{tikzpicture}
 \end{figure}
-\subsubsection{UDP Checksum}
+\subsection{UDP Checksum}
 \begin{itemize}[nosep]
     \item Uses the same algorithm as the IP checksum
           \begin{itemize}
@@ -47,7 +47,7 @@
           \end{itemize}
     \item Optional in IPv4: not checked if value is 0
 \end{itemize}
-\subsubsection{Pseudo Header}
+\subsection{Pseudo Header}
 \begin{verbatim}
      0      7 8     15 16    23 24    31
     +--------+--------+--------+--------+
@@ -81,7 +81,7 @@
     \end{tabular}
 \end{table}
 
-\subsubsection{Transport Layer Reliability}
+\subsection{Transport Layer Reliability}
 \begin{itemize}[nosep]
     \item Extra difficulties
           \begin{itemize}[nosep]
@@ -147,7 +147,7 @@
               \item Does it work?
           \end{itemize}
 \end{itemize}
-\subsubsection{TCP Header}
+\subsection{TCP Header}
 \begin{Verbatim}
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -169,7 +169,7 @@
     |                             data                              |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 \end{Verbatim}
-\subsubsection{Header Fields}
+\subsection{Header Fields}
 \begin{itemize}[nosep]
     \item Ports: multiplexing
     \item Sequence number
@@ -187,7 +187,7 @@
     \item Data Offset: number of 4 byte header + option bytes
     \item Flags, Checksum, Urgen Pointer
 \end{itemize}
-\subsubsection{Header Flags}
+\subsection{Header Flags}
 \begin{itemize}[nosep]
     \item URG: whether there is urgent data
     \item ACK: ack no. valid (all but first segment)
@@ -197,7 +197,7 @@
     \item FIN: close connection
 \end{itemize}
 
-\subsubsection{Establishing a Connection}
+\subsection{Establishing a Connection}
 \begin{itemize}[nosep]
     \item Three-way handshake
     \item Two sides agree on respective initial sequence nums
@@ -206,7 +206,7 @@
     \item If no SYN-ACK: retry, timeout
 \end{itemize}
 
-\subsubsection{Connection Termination}
+\subsection{Connection Termination}
 \begin{itemize}[nosep]
     \item FIN bit says no more data to send
           \begin{itemize}[nosep]
@@ -216,7 +216,7 @@
     \item Typical close
 \end{itemize}
 
-\subsubsection{TIME\_WAIT}
+\subsection{TIME\_WAIT}
 \begin{itemize}[nosep]
     \item Why do yo have to wait for 2MSL in TIME\_WAIT?
           \begin{itemize}[nosep]
@@ -240,7 +240,7 @@
           \end{itemize}
 \end{itemize}
 
-\subsubsection{Reliable Delivery}
+\subsection{Reliable Delivery}
 \begin{itemize}[nosep]
     \item TCP retransmits if data corrupted or dropped
           \begin{itemize}[nosep]
@@ -254,7 +254,7 @@
           \end{itemize}
 \end{itemize}
 
-\subsubsection{Smoothing RTT}
+\subsection{Smoothing RTT}
 \begin{itemize}[nosep]
     \item RTT measurement can have large variation
     \item Need to smooth the samples
@@ -269,7 +269,7 @@
     \item Problems?
 \end{itemize}
 
-\subsubsection{EWMA}
+\subsection{EWMA}
 \begin{itemize}[nosep]
     \item EWMA: Exponentially Weighted Moving Average
     \item Give greater weight to recent samples.

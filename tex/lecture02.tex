@@ -1,5 +1,5 @@
-\chapter{Network Applications and Socket Programming}
-\section{Network Applications}
+\section{Network Applications and Socket Programming}
+\subsection{Network Applications}
 \begin{figure}[H]
     \tikzsetnextfilename{client-server-v-p2p}
     \begin{tikzpicture}
@@ -64,11 +64,11 @@
         \path ([yshift=1cm]l.north east) -- ([yshift=1cm]s.north west) node[pos=0.5,label=above:{Client-server or peer-to-peer?}] () {};
     \end{tikzpicture}
 \end{figure}
-\subsubsection{Protocol Timing Diagram}
+\subsection{Protocol Timing Diagram}
 \begin{figure}[H]
     \includegraphics[width=\textwidth]{lazy/protocol.pdf}
 \end{figure}
-\subsubsection{Cloud-based File Backup Application}
+\subsection{Cloud-based File Backup Application}
 \begin{itemize}[nosep]
     \item Client-server or peer-to-peer?
     \item Where do the applications run?
@@ -92,7 +92,7 @@
         \path ([yshift=-0.8cm]s.south west) -- ([yshift=-0.8cm]l.south east) node[pos=0.9,label=below:{3.}] () {};
     \end{tikzpicture}
 \end{figure}
-\section{Socket Programming}
+\subsection{Socket Programming}
 \subsection{Using TCP/IP}
 \begin{itemize}[nosep]
     \item How can applications use the network?

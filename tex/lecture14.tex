@@ -1,5 +1,5 @@
-\chapter{Distance Vector, Link State, and Inter-AS Routing}
-\section{Routing}
+\section{Distance Vector, Link State, and Inter-AS Routing}
+\subsection{Routing}
 \subsection{Good news travels fast}
 \begin{figure}[H]
     \tikzsetnextfilename{goodnews}
@@ -39,7 +39,7 @@
     \item An increase in cost may cause confusion with old information
     \item May form loops
 \end{itemize}
-\section{How to avoid loops}
+\subsection{How to avoid loops}
 \begin{itemize}[nosep]
     \item IP TTL field prevents a packet from living forever
           \begin{itemize}[nosep]
@@ -64,7 +64,7 @@
               \item Faster to break out of loops, but increases advertisement sizes
           \end{itemize}
 \end{itemize}
-\subsubsection{Warning}
+\subsection{Warning}
 \begin{itemize}[nosep]
     \item Split Horizon/Split Horizon with Poison Reverse only helps between nodes
           \begin{itemize}[nosep]
@@ -73,7 +73,7 @@
           \end{itemize}
 \end{itemize}
 
-\section{Link State Routing}
+\subsection{Link State Routing}
 \begin{itemize}[nosep]
     \item Strategy
           \begin{itemize}[nosep]
@@ -136,7 +136,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\subsubsection{Distance Vector vs. Link State}
+\subsection{Distance Vector vs. Link State}
 \begin{itemize}[nosep]
     \item Number of messages (per node $v$ with degree $d$)
           \begin{itemize}[nosep]
@@ -161,7 +161,7 @@
                     \end{itemize}
           \end{itemize}
 \end{itemize}
-\subsubsection{Examples}
+\subsection{Examples}
 \begin{itemize}[nosep]
     \item RIPv2
           \begin{itemize}[nosep]
@@ -175,7 +175,7 @@
               \item RFC 2328 (244 pages)
           \end{itemize}
 \end{itemize}
-\subsubsection{RIPv2}
+\subsection{RIPv2}
 \begin{itemize}[nosep]
     \item Runs on UDP port 520
     \item Link cost = 1
@@ -186,7 +186,7 @@
               \item Supports Split Horizon, Poison Reverse
           \end{itemize}
 \end{itemize}
-\subsubsection{Packet Format}
+\subsection{Packet Format}
 \begin{verbatim}
 0                   1                   2                   3
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -198,7 +198,7 @@
 |                                                               |
 +---------------+---------------+---------------+---------------+
 \end{verbatim}
-\subsubsection{RIPv2 Entry}
+\subsection{RIPv2 Entry}
 \begin{verbatim}
 0                   1                   2                   3
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -214,7 +214,7 @@
 |                        Metric (4)                             |
 +---------------------------------------------------------------+
 \end{verbatim}
-\subsubsection{Next Hop Field}
+\subsection{Next Hop Field}
 \begin{itemize}[nosep]
     \item Allows one router to advertise routes for multiple routers on the same subnet
     \item Suppose only \texttt{XR1} talks RIPv2
@@ -227,7 +227,7 @@
 --+-------+-------+---------------+-------+-------+--
   <-------------RIP-2------------->
 \end{verbatim}
-\subsubsection{OSPFv2}
+\subsection{OSPFv2}
 \begin{itemize}[nosep]
     \item Link state protocol
     \item Runs directly over IP (protocol 89)
@@ -237,7 +237,7 @@
     \item All exchanges are authenticated
     \item Adds notion of \emph{areas} for scalability
 \end{itemize}
-\section{Inter-Domain Routing}
+\subsection{Inter-Domain Routing}
 \subsection{Why Inter vs. Intra}
 \begin{itemize}[nosep]
     \item Why not just use OSPF everywhere?

@@ -1,5 +1,5 @@
-\chapter{Flow and Congestion Control}
-\section{Flow Control}
+\section{Flow and Congestion Control}
+\subsection{Flow Control}
 \subsection{First Goal}
 \begin{itemize}[nosep]
     \item We should not send more data than the receiver can take: \emph{flow control}
@@ -36,7 +36,7 @@
               \item Consider minimum frame size
           \end{itemize}
 \end{itemize}
-\subsubsection{When to Transmit?}
+\subsection{When to Transmit?}
 \begin{algorithm}[H]
     \caption[Nagle's Algorithm]{\nameref*{alg:nagle} -- reduce the overhead of small packets}
     \label{alg:nagle}
@@ -76,7 +76,7 @@
 
 \url{https://developers.slashdot.org/comments.pl?sid=174457&cid=14515105}
 
-\subsubsection{Turning off Nagle's Algorithm}
+\subsection{Turning off Nagle's Algorithm}
 \emph{``In general, since Nagle's algorithm is only a defense against careless applications, disabling Nagle’s algorithm will not benefit most carefully written applications that take proper care of buffering. Disabling Nagle’s algorithm will enable the application to have many small packets in flight on the network at once, instead of a smaller number of large packets, which may increase load on the network, and may or may not benefit the application performance.''}
 
 \begin{itemize}[nosep]
@@ -115,7 +115,7 @@
     \item We should not send more data than the network can take: \emph{congestion control}
 \end{itemize}
 
-\section{TCP Congestion Control}
+\subsection{TCP Congestion Control}
 \begin{itemize}[nosep]
     \item 3 Key Challenges
           \begin{itemize}[nosep]

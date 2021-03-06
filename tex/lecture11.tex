@@ -1,5 +1,5 @@
-\chapter{TCP Friendliness and Getting Help from the Network (Continued)}
-\section{Help from the network}
+\section{TCP Friendliness and Getting Help from the Network (Continued)}
+\subsection{Help from the network}
 \begin{itemize}[nosep]
     \item Problem: still vulnerable to malicious flows!
           \begin{itemize}[nosep]
@@ -29,7 +29,7 @@
     \item Simulate \emph{ff} and serve packets in the order in which they would finish in the \emph{ff} system
     \item Each flow will receive exactly its fair share
 \end{itemize}
-\subsubsection{Implementing Fair Queueing}
+\subsection{Implementing Fair Queueing}
 \begin{itemize}[nosep]
     \item Suppose clock ticks with each bit transmitted
           \begin{itemize}[nosep]
@@ -57,7 +57,7 @@
               \item Not perfect: can't preempt packets
           \end{itemize}
 \end{itemize}
-\subsubsection{Big Picture}
+\subsection{Big Picture}
 \begin{itemize}[nosep]
     \item Fair Queueing doesn't eliminate congestion: just manages it
     \item You need both, ideally:
@@ -76,15 +76,15 @@
               \item ACK Division Attack
           \end{itemize}
 \end{itemize}
-\subsubsection{Increasing \texttt{cwnd} Faster}
+\subsection{Increasing \texttt{cwnd} Faster}
 \begin{figure}[H]
     \includegraphics[width=\textwidth]{lazy/cwnd-faster.png}
 \end{figure}
-\subsubsection{Larger Initial Window}
+\subsection{Larger Initial Window}
 \begin{figure}[H]
     \includegraphics[width=\textwidth]{lazy/larger-initial-window.png}
 \end{figure}
-\subsubsection{Open Many Connections}
+\subsection{Open Many Connections}
 \begin{itemize}[nosep]
     \item Web Browser: has to download $k$ objects for a page
           \begin{itemize}[nosep]
@@ -116,7 +116,7 @@
                     \end{itemize}
           \end{itemize}
 \end{itemize}
-\subsubsection{Exploiting Implicit Assumptions}
+\subsection{Exploiting Implicit Assumptions}
 \begin{itemize}[nosep]
     \item Savage, et al., CCR 1999
           \begin{itemize}[nosep]
@@ -129,7 +129,7 @@
               \item Congestion control assumes ACKs cover entire sent segments
           \end{itemize}
 \end{itemize}
-\subsubsection{ACK Division Attack}
+\subsection{ACK Division Attack}
 \begin{itemize}[nosep]
     \item Receiver: \textit{``upon receiving a segment with $N$ bytes, divide the bytes into $M$ groups and ackowledge each group separately''}
     \item Sender will grow $M$ times faster
@@ -138,7 +138,7 @@
               \item $M = N = 1460$
           \end{itemize}
 \end{itemize}
-\subsubsection{Defense}
+\subsection{Defense}
 \begin{itemize}[nosep]
     \item Appropriate Byte Counting
           \begin{itemize}[nosep]
@@ -146,16 +146,16 @@
               \item In slow start, $\texttt{cwnd} += \min(N, \texttt{MSS})$ where $N$ is the number of newly acknowledged bytes in the received ACK
           \end{itemize}
 \end{itemize}
-\subsubsection{DupACK Spoofing}
+\subsection{DupACK Spoofing}
 \begin{itemize}[nosep]
     \item Receiver: \textit{``Upon receiving a data segment, the receiver sends a long stream of acknowledgments for the last sequence number received''}
     \item Sender sends at a rate proportional to the ACK rate
 \end{itemize}
-\subsubsection{Optimistic ACKing}
+\subsection{Optimistic ACKing}
 \begin{itemize}[nosep]
     \item Receiver: \textit{``Upon receiving a data segment, the receiver sends a stream of acknowledgments anticipating data that will be sent by the sender''}
 \end{itemize}
-\subsubsection{Cheating TCP and Game Theory}
+\subsection{Cheating TCP and Game Theory}
 \begin{figure}[H]
     \centering
     \tikzsetnextfilename{cheating-tcp-and-game-theory}
