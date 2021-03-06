@@ -65,18 +65,7 @@
 \ifdraft{\newcommand{\todosection}[1]{\section[\color{cyan}#1]{#1}\todo[inline, color=blue!40]{Add Section: #1}}}{\newcommand{\todosection}[1]{}}
 
 \pgfplotsset{compat=newest}
-\usetikzlibrary{shapes, shapes.misc}
-%\usetikzlibrary{snakes}
-\usetikzlibrary{decorations}
-\usetikzlibrary{fit}
-\usetikzlibrary{backgrounds}
-\usetikzlibrary{positioning}
-\usetikzlibrary{patterns}
-\usetikzlibrary{shadows}
-\usetikzlibrary{calc}
-\usetikzlibrary{arrows, arrows.meta}
-\usetikzlibrary{trees}
-\usetikzlibrary{external}
+\usetikzlibrary{shapes,shapes.misc,shapes.symbols,decorations,fit,backgrounds,positioning,patterns,shadows,calc,arrows,arrows.meta,trees,external}
 \tikzexternalize[prefix=tikzimages/]
 \tikzset{>={Latex[width=2mm,length=2mm]}}
 \newcommand\DoubleLine[7][4pt]{%

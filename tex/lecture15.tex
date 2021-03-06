@@ -6,7 +6,7 @@
     \item Scale
     \item Performance
 \end{itemize}
-\subsection{Types of ASs}
+\subsection{Types of ASes}
 \begin{itemize}[nosep]
     \item Local Traffic -- source or destination in local AS
     \item Transit Traffic -- passes through AS
@@ -16,12 +16,12 @@
           \end{itemize}
     \item Multihomed AS
           \begin{itemize}[nosep]
-              \item Connects to multiple ASs
+              \item Connects to multiple ASes
               \item Carries no transit traffic
           \end{itemize}
     \item Transit AS
           \begin{itemize}[nosep]
-              \item Connects to multiple ASs and carries transit traffic
+              \item Connects to multiple ASes and carries transit traffic
           \end{itemize}
 \end{itemize}
 \subsection{AS Relationships}
@@ -61,12 +61,12 @@
 \begin{itemize}[nosep]
     \item Distance vector algorithm with extra information
           \begin{itemize}[nosep]
-              \item For each route, store the complete path (ASs)
+              \item For each route, store the complete path (ASes)
               \item No extra computation, just extra storage (and traffic)
           \end{itemize}
     \item Advantages
           \begin{itemize}[nosep]
-              \item Can make policy choices based on set of ASs
+              \item Can make policy choices based on set of ASes
               \item Can easily avoid loops
           \end{itemize}
 \end{itemize}
@@ -137,13 +137,13 @@
           \begin{itemize}[nosep]
               \item Decentralized combination of policies
           \end{itemize}
-    \item Not all ASs know all paths
+    \item Not all ASes know all paths
     \item AS abstract $\to$ loss off efficiency
     \item scaling
           \begin{itemize}[nosep]
-              \item 37 ASs
+              \item 37 ASes
               \item 350K+ prefixes
-              \item ASs with one prefix: 15664
+              \item ASes with one prefix: 15664
               \item Most prefixes by one AS: 3686 (AS6389, BellSouth)
           \end{itemize}
 \end{itemize}
@@ -152,7 +152,7 @@
 \begin{itemize}[nosep]
     \item BGP provides capability for enforcing various policies
     \item Policies are not part of BGP: they are provided to BGP as configuration information
-    \item BGP enforces policies by choosing paths from multiple alternatives and controlling advertisement to other ASs
+    \item BGP enforces policies by choosing paths from multiple alternatives and controlling advertisement to other ASes
 \end{itemize}
 
 \subsection{BGP Path Selection}
@@ -205,7 +205,7 @@
 
 \subsection{Peer Relationships}
 \begin{itemize}[nosep]
-    \item ASs agree to exchange traffic for free
+    \item ASes agree to exchange traffic for free
           \begin{itemize}[nosep]
               \item Penalties/Renegotiate if imbalance
           \end{itemize}
