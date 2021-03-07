@@ -1,6 +1,6 @@
 \section{BGP}
 \subsection{Forwarding with CIDR}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Longest Prefix Match
 \end{itemize}
 \begin{figure}[H]
@@ -8,10 +8,10 @@
 \end{figure}
 
 \subsection{Some BGP Challenges}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Convergence
     \item Traffic engineering
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item How to assure certain routes are selected
           \end{itemize}
     \item Scaling (route reflectors)
@@ -19,15 +19,15 @@
 \end{itemize}
 
 \subsection{Convergence}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Given a change, how long until the network re-stabilizes?
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Depends on change: sometimes never
               \item Open research problem: ``tweak and pray''
               \item Distributed setting is challenging
           \end{itemize}
     \item Some reasons for change
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Topology changes
               \item BGP session failures
               \item Changes in policy
@@ -54,7 +54,7 @@
         \node[below right=of 1a] (3a) {3};
 
         \draw (0a) -- (1a) -- (3a);
-        \path (0a) -- (1a) node[pos=0.5, draw,red,starburst,fill=orange,minimum height=2cm,minimum width=3cm, line width=1.5pt,scale=0.25] {};
+        \path (0a) -- (1a) node[pos=0.5, draw,red,starburst,fill=orange,minimum height=2cm,minimum width=3cm,scale=0.25] {};
 
         \draw[red,->] (1a) -- (2a) node[fill=none,above,pos=0.6] {(1, 2, 0)};
         \draw[red,->] (3a) -- (2a) node[fill=none,right,pos=0] {(3, 2, 0)};
@@ -62,15 +62,15 @@
     \end{tikzpicture}
 \end{figure}
 \subsection{Routing Change: Path Exploration}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item AS 1
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Delete the route (1, 0)
               \item Switch to next route (1, 2, 0)
               \item Send route (1, 2, 0) to AS 3
           \end{itemize}
     \item AS 3
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Sees (1, 2, 0) replace (1, 0)
               \item Compares to route (2, 0)
               \item Switches to using AS 2
@@ -85,27 +85,27 @@
         \node[below right=of 1a] (3a) {3};
 
         \draw (0a) -- (1a) -- (3a);
-        \path (0a) -- (1a) node[pos=0.5, draw,red,starburst,fill=orange,minimum height=2cm,minimum width=3cm, line width=1.5pt,scale=0.25] {};
+        \path (0a) -- (1a) node[pos=0.5, draw,red,starburst,fill=orange,minimum height=2cm,minimum width=3cm,scale=0.25] {};
 
         \draw[red,->] (1a) -- (2a) node[fill=none,above,pos=0.6] {(1, 2, 0)};
         \draw[red,->] (3a) -- (2a) node[fill=none,right,pos=0] {(3, 2, 0)};
         \draw[red,->] (2a) -- (0a) node[fill=none,right,pos=0.8] {(2, 0)};
     \end{tikzpicture}
 \end{figure}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Initial Situation
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Destination 0 is alive
               \item All ASes use direct path
           \end{itemize}
     \item When destination dies
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item All ASes lose direct path
               \item All switch to longer paths
               \item Eventually withdrawn
           \end{itemize}
     \item e.g. AS 2
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item (2, 0) $\rightarrow$ (2, 1, 0)
               \item (2, 1, 0) $\rightarrow$ (2, 3, 0)
               \item (2, 3, 0) $\rightarrow$ (2, 1, 3, 0)
@@ -118,7 +118,7 @@
 \end{figure}
 
 \subsection{Unstable Configurations}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Due to policy conflicts
 \end{itemize}
 \begin{figure}[H]
@@ -126,29 +126,29 @@
 \end{figure}
 
 \subsection{BGP Security Goals}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Confidential messages exchange between neighbors
     \item \emph{Validity of routing information}
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Origin, Path, Policy
           \end{itemize}
     \item Correspondence to the data path
 \end{itemize}
 
 \subsection{Origin: IP Address Ownership and Hijacking}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item IP address block assignment
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Regional Internet Registries (ARIN, RIPE, APNIC)
               \item Internet Service Providers
           \end{itemize}
     \item Proper Origination of a prefix into BGP
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item By the AS who owns the prefix
               \item \dots or, by its upstream provider(s) on its behalf
           \end{itemize}
     \item However, what's to stop someone else?
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Prefix hijacking: another AS originates the prefix
               \item BGP does not verify that the AS is authorized
               \item Registries of prefix ownership are inaccurate
@@ -159,9 +159,9 @@
 \begin{figure}[H]
     \includegraphics[scale=0.5]{lazy/prefixhijacking.png}
 \end{figure}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Consequences for the affected ASes
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Blackhole: data traffic is discarded
               \item Snooping: data traffic is inspected and then redirected
               \item Impersonation: data traffic is sent to bogus destinations
@@ -169,23 +169,23 @@
 \end{itemize}
 
 \subsection{Hijacking is Hard to Debug}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Real origin AS doesn't see the problem
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Picks its own route
               \item Might not even learn the bogus route
           \end{itemize}
     \item May not cause loss of connectivity
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item e.g. if the bogus AS snoops and redirects
               \item \dots may only cause performance degradation
           \end{itemize}
     \item Or, loss of connectivity is isolated
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item e.g. only for sources in parts of the internet
           \end{itemize}
     \item Diagnosing prefix hijacking
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Analyzing updates from many vantage points
               \item Launching traceroute from many vantage points
           \end{itemize}
@@ -195,29 +195,29 @@
 \begin{figure}[H]
     \includegraphics[scale=0.5]{lazy/subprefixhijacking.png}
 \end{figure}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Originating in a more-specific prefix
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Every AS picks the bogus route for that prefix
               \item Traffic follows the longest matching prefix
           \end{itemize}
 \end{itemize}
 
 \subsection{How to Hijack a Prefix}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item The hijacking AS has
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Router with eBGP sessions(s)
               \item Configured to originate the prefix
           \end{itemize}
     \item Getting access to the router
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Network operator makes configuration mistake
               \item Disgruntled operator launches an attack
               \item Outsider breaks in to the router and reconfigures
           \end{itemize}
     \item Getting other ASes to believe bogus route
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Neighbor ASes not filtering the routes
               \item e.g. by allowing only expected prefixes
               \item But, specifying filters on \emph{peering} links is hard
@@ -225,7 +225,7 @@
 \end{itemize}
 
 \subsection{Pakistan YouTube Incident}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item YouTube has prefix 208/65/152.0/22
     \item Pakistan's government order YouTube blocked
     \item Pakistan Telecom (AS 17557) announces 208.65.153.0/24 in the wrong direction (outwards!)
@@ -234,14 +234,14 @@
 \end{itemize}
 
 \subsection{Many other incidents}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Spammers steal unused IP space to hide
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Announce very short prefixes (e.g. /8). Why?
               \item For a short amount of time
           \end{itemize}
     \item China incident, April 8, 2010
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item China's Telecom AS23724 generally announces 40 prefixes
               \item On April 8, announced $\approx$ 37,000 prefixes
               \item About 10\% leaked outside of China
@@ -250,51 +250,51 @@
 \end{itemize}
 
 \subsection{Attacks on BGP Paths}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Remove an AS from the path
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item e.g. 701 3715 88 $\to$ 701 88
           \end{itemize}
     \item Why?
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Attract sources that would normally avoid AS 3715
               \item Make AS 88 look like it is closer to the core
               \item Can fool loop detection!
           \end{itemize}
     \item May be hard to tell whether this is a lie
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item 88 could indeed connect directly to 701!
           \end{itemize}
 \end{itemize}
 
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Adding ASes to the path
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item e.g. 701 88 $\to$ 701 3715 88
           \end{itemize}
     \item Why?
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Trigger lookup detection in AS 3715
-                    \begin{itemize}
+                    \begin{itemize}[nosep]
                         \item This would block unwanted traffic from AS 3715!
                     \end{itemize}
               \item Make your AS look more connected
           \end{itemize}
     \item Who can tell this is a lie?
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item AS 3715 could, if it could see the route
               \item AS 88 could, but would it really care?
           \end{itemize}
 \end{itemize}
 
 
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Adding ASes at the end of the path
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item e.g. 701 88 $\to$ 701 88 3
           \end{itemize}
     \item Why?
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Evade detection for a bogus route (if added AS is legitimate owner of a prefix)
           \end{itemize}
     \item Hard to tell that the path is bogus!

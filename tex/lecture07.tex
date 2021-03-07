@@ -48,16 +48,14 @@
     \item Optional in IPv4: not checked if value is 0
 \end{itemize}
 \subsection{Pseudo Header}
-\begin{verbatim}
-     0      7 8     15 16    23 24    31
-    +--------+--------+--------+--------+
-    |          source address           |
-    +--------+--------+--------+--------+
-    |        destination address        |
-    +--------+--------+--------+--------+
-    |  zero  |protocol|   UDP length    |
-    +--------+--------+--------+--------+
-\end{verbatim}
+\begin{figure}[H]
+    \begin{bytefield}{32}
+        \bitheader{0,7,8,15,16,23,24,31}\\
+        \wordbox{1}{source address}\\
+        \wordbox{1}{destination address}\\
+        \bitboxes{8}{{zero}{protocol}} & \bitbox{16}{UDP length}
+    \end{bytefield}
+\end{figure}
 \begin{itemize}[nosep]
     \item UDP Checksum is computed over \emph{pseudo-header} prepended to the UDP header
           \begin{itemize}[nosep]
@@ -148,27 +146,19 @@
           \end{itemize}
 \end{itemize}
 \subsection{TCP Header}
-\begin{Verbatim}
-    0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |          Source Port          |       Destination Port        |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                        Sequence Number                        |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                    Acknowledgment Number                      |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |  Data |           |U|A|P|R|S|F|                               |
-    | Offset| Reserved  |R|C|S|S|Y|I|            Window             |
-    |       |           |G|K|H|T|N|N|                               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |           Checksum            |         Urgent Pointer        |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                    Options                    |    Padding    |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                             data                              |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-\end{Verbatim}
+\begin{figure}[H]
+    \begin{bytefield}[bitwidth=0.03\textwidth]{32}
+        \bitheader{0-31}\\
+        \bitboxes{16}{{Source Port}{Destination Port}}\\
+        \wordbox{1}{Sequence Number}\\
+        \wordbox{1}{Acknowledgement Number}\\
+        \bitbox[lr]{4}{Data} & \bitbox[lr]{3}{} & \bitboxes[lr]{1}{NCWUAPRSF} & \bitbox[lr]{16}{}\\
+        \bitbox[lr]{4}{Offset} & \bitbox[lr]{3}{Reserved} & \bitboxes[lr]{1}{SWCRCSSYI} & \bitbox[lr]{16}{Window}\\
+        \bitbox[lr]{4}{} & \bitbox[lr]{3}{} & \bitboxes[lr]{1}{{}REGKHTNN} & \bitbox[lr]{16}{}\\
+        \bitbox{24}{Options} & \bitbox{8}{Padding}\\
+        \wordbox{1}{data}
+    \end{bytefield}
+\end{figure}
 \subsection{Header Fields}
 \begin{itemize}[nosep]
     \item Ports: multiplexing

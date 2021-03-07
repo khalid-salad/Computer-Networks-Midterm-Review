@@ -187,33 +187,24 @@
           \end{itemize}
 \end{itemize}
 \subsection{Packet Format}
-\begin{verbatim}
-0                   1                   2                   3
-0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| command (1) | version (1) |           must be zero (2)        |
-+---------------+---------------+-------------------------------+
-|                                                               |
-~                         RIP Entry (20)                        ~
-|                                                               |
-+---------------+---------------+---------------+---------------+
-\end{verbatim}
+\begin{figure}[H]
+    \begin{bytefield}{32}
+        \bitheader{0-31}\\
+        \bitboxes{8}{{command (1)}{version (1)}} & \bitbox{16}{must be zero (2)}\\
+        \wordbox{2}{RIP Entry (20)}
+    \end{bytefield}
+\end{figure}
 \subsection{RIPv2 Entry}
-\begin{verbatim}
-0                   1                   2                   3
-0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| address family identifier (2) |      Route Tag (2)            |
-+-------------------------------+-------------------------------+
-|                        IP address (4)                         |
-+---------------------------------------------------------------+
-|                        Subnet Mask (4)                        |
-+---------------------------------------------------------------+
-|                        Next Hop (4)                           |
-+---------------------------------------------------------------+
-|                        Metric (4)                             |
-+---------------------------------------------------------------+
-\end{verbatim}
+\begin{figure}[H]
+    \begin{bytefield}{32}
+        \bitheader{0-31}\\
+        \bitboxes{16}{{Address Family Identifier (2)}{Route Tag (2)}}\\
+        \wordbox{1}{IP Address (4)}\\
+        \wordbox{1}{Subnet Mask (4)}\\
+        \wordbox{1}{Next Hop (4)}\\
+        \wordbox{1}{Metric (4)}
+    \end{bytefield}
+\end{figure}
 \subsection{Next Hop Field}
 \begin{itemize}[nosep]
     \item Allows one router to advertise routes for multiple routers on the same subnet

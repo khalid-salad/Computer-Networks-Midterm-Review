@@ -1,19 +1,23 @@
 \section{DNS and P2P}
 \subsection{DNS}
 \subsection{Structure of a DNS Message}
-\begin{Verbatim}[commandchars=\\\{\}]
-    \textcolor{blue}{+---------------------+}
-    \textcolor{blue}{|        Header       |}
-    \textcolor{blue}{+---------------------+}
-    \textcolor{blue}{|       Question      | the question for the name server}
-    \textcolor{blue}{+---------------------+}
-    \textcolor{blue}{|        Answer       | RRs answering the question}
-    \textcolor{blue}{+---------------------+}
-    \textcolor{blue}{|      Authority      | RRs pointing toward an authority}
-    \textcolor{blue}{+---------------------+}
-    \textcolor{blue}{|      Additional     | RRs holding additional information}
-    \textcolor{blue}{+---------------------+}
-\end{Verbatim}
+\begin{figure}[H]
+    \begin{bytefield}[rightcurly=.]{16}
+        \wordbox{1}{Header}\\
+        \begin{rightwordgroup}{the question for the name server}
+            \wordbox{1}{Question}
+        \end{rightwordgroup}\\
+        \begin{rightwordgroup}{RRs answering the question}
+            \wordbox{1}{Answer}
+        \end{rightwordgroup}\\
+        \begin{rightwordgroup}{RRs pointing toward an authority}
+            \wordbox{1}{Authority}
+        \end{rightwordgroup}\\
+        \begin{rightwordgroup}{RRs holding additional information}
+            \wordbox{1}{Additional}
+        \end{rightwordgroup}\\
+    \end{bytefield}
+\end{figure}
 \begin{itemize}[nosep]
     \item Same format for queries and replies
           \begin{itemize}[nosep]
@@ -24,26 +28,20 @@
     \item Additional for glue, other RRs client might need
 \end{itemize}
 \subsection{Header Format}
-\begin{Verbatim}[commandchars=\\\{\}]
-    \textcolor{blue}{                                1  1  1  1  1  1}
-    \textcolor{blue}{  0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5}
-    \textcolor{blue}{+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+}
-    \textcolor{blue}{|                      ID                       |}
-    \textcolor{blue}{+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+}
-    \textcolor{blue}{|QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   |}
-    \textcolor{blue}{+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+}
-    \textcolor{blue}{|                    QDCOUNT                    |}
-    \textcolor{blue}{+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+}
-    \textcolor{blue}{|                    ANCOUNT                    |}
-    \textcolor{blue}{+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+}
-    \textcolor{blue}{|                    NSCOUNT                    |}
-    \textcolor{blue}{+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+}
-    \textcolor{blue}{|                    ARCOUNT                    |}
-    \textcolor{blue}{+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+}
-\end{Verbatim}
+\begin{figure}[H]
+    \begin{bytefield}[bitwidth=0.05\textwidth]{16}
+        \bitheader{0-15}\\
+        \bitbox{16}{ID}\\
+        \bitbox{1}{QR} & \bitbox{4}{Opcode} & \bitboxes{1}{{AA}{TC}{RD}{RA}} & \bitbox{3}{Z} & \bitbox{4}{RCode}\\
+        \wordbox{1}{QDCount}\\
+        \wordbox{1}{ANCount}\\
+        \wordbox{1}{NSCount}\\
+        \wordbox{1}{ARCount}
+    \end{bytefield}
+\end{figure}
 \begin{itemize}[nosep]
     \item ID: match response to query; QR: 0 query/1 response
-    \item RCODE: error code
+    \item RCode: error code
     \item AA: authoritative answer, TC: truncated
     \item RD: recursion desired, RA: recursion available
 \end{itemize}
