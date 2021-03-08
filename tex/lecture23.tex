@@ -1,0 +1,406 @@
+\section{Security -- Encryption, Integrity, Authentication, Certificate, HTTPS, and Pharming}
+\subsection{Confidentality through Cryptography}
+\begin{itemize}[nosep]
+    \item Cryptography \emph{communication over insecure channel in the presence of adversaries}
+    \item Central goal: how to encode information so that an adversary can't extract it, \dots but a friend can
+    \item General premise: a \emph{key} is required for decoding
+          \begin{itemize}[nosep]
+              \item Give it to friends, keep it away from attackers
+          \end{itemize}
+    \item Two different categories of encryption
+          \begin{itemize}[nosep]
+              \item Symmetric: efficient, requires key distribution
+              \item Asymmetric (Public Key): computationally expensive, but no key distribution problem
+          \end{itemize}
+\end{itemize}
+
+\subsection{Symmetric Key Encryption}
+\begin{itemize}[nosep]
+    \item Same key for encryption and decryption
+          \begin{itemize}[nosep]
+              \item Both sender and receiver know key
+              \item But adversary does not know key
+          \end{itemize}
+    \item For communication, problem is \emph{key distribution}
+          \begin{itemize}[nosep]
+              \item How do the parties (securely) agree on the key?
+          \end{itemize}
+    \item What can you do with a huge key? One-time pad
+          \begin{itemize}[nosep]
+              \item Huge key of random bits
+          \end{itemize}
+    \item To encrypt/decrypt, just \texttt{XOR} with the key!
+          \begin{itemize}[nosep]
+              \item \emph{Provably secure!} \dots provided:
+                    \begin{itemize}[nosep]
+                        \item You never reuse the key, \dots and it really is random/unpredictable
+                    \end{itemize}
+              \item Spies actually use these
+          \end{itemize}
+\end{itemize}
+
+\subsection{Using Symmetric Keys}
+\begin{itemize}[nosep]
+    \item Both the sender and the receiver use the same symmetric key
+\end{itemize}
+\begin{figure}[H]
+    \tikzsetnextfilename{symmetric-key}
+    \begin{tikzpicture}
+        \node (plaintext1) {Plaintext};
+        \node[below=of plaintext1,draw,fill=yellow!40,ellipse,align=left] (enc) {Encrypt with\\\emph{secret} key};
+        \node[right=6cm of enc,draw,fill=yellow!40,ellipse,align=left] (dec) {Decrypt with\\\emph{secret} key};
+        \node[above=of dec] (plaintext2) {Plaintext};
+        \path(enc) -- (dec) node[pos=0.5,minimum size=3cm,cloud,draw,fill=blue!40!white,yshift=-1cm] (internet) {};
+        \node at ([yshift=1cm]internet.center) {Internet};
+        \draw[->] (plaintext1) -- (enc);
+        \draw (enc.south) -- ([yshift=-1cm]enc.south);
+        \draw[->] ([yshift=-1cm]enc.south) -| (dec) node[pos=0.25,above] {Ciphertext};
+        \draw[->] (dec) -- (plaintext2);
+    \end{tikzpicture}
+\end{figure}
+
+\subsection{Asymmetric Encryption (Public Key)}
+\begin{itemize}[nosep]
+    \item Idea: use two \emph{different} keys, one to encrypt (\textbf{e}) and one to decrypt (\textbf{d})
+          \begin{itemize}[nosep]
+              \item A \emph{key pair}
+          \end{itemize}
+    \item Crucial property: knowing \textbf{e} does not give away \textbf{d}
+    \item Therefore \textbf{e} can be public: everyone knows it!
+    \item If Alice wants to send to Bob, she fetche's Bob's public key (say, from Bob's home page) and encrypts with it
+          \begin{itemize}[nosep]
+              \item \emph{Alice} can't decrypt what she is sending to Bob\dots
+                    \begin{itemize}[nosep]
+                        \item \dots but then, \emph{neither can anyone else} (except Bob)
+                    \end{itemize}
+          \end{itemize}
+\end{itemize}
+
+\subsection{Public Key/Asymmetric Encryption}
+\begin{itemize}[nosep]
+    \item Sender uses receiver's \emph{public} key
+          \begin{itemize}[nosep]
+              \item Adverised to everyone
+          \end{itemize}
+    \item Receiver uses complementary \emph{private} key
+          \begin{itemize}[nosep]
+              \item Must be kept secret
+          \end{itemize}
+\end{itemize}
+
+\begin{figure}[H]
+    \tikzsetnextfilename{asymmetric-key}
+    \begin{tikzpicture}
+        \node (plaintext1) {Plaintext};
+        \node[below=of plaintext1,draw,fill=yellow!40,ellipse,align=left] (enc) {Encrypt with\\\emph{public} key};
+        \node[right=6cm of enc,draw,fill=yellow!40,ellipse,align=left] (dec) {Decrypt with\\\emph{private} key};
+        \node[above=of dec] (plaintext2) {Plaintext};
+        \path(enc) -- (dec) node[pos=0.5,minimum size=3cm,cloud,draw,fill=blue!40!white,yshift=-1cm] (internet) {};
+        \node at ([yshift=1cm]internet.center) {Internet};
+        \draw[->] (plaintext1) -- (enc);
+        \draw (enc.south) -- ([yshift=-1cm]enc.south);
+        \draw[->] ([yshift=-1cm]enc.south) -| (dec) node[pos=0.25,above] {Ciphertext};
+        \draw[->] (dec) -- (plaintext2);
+    \end{tikzpicture}
+\end{figure}
+
+\subsection{Works in Reverse Direction Too!}
+\begin{itemize}[nosep]
+    \item Sender uses own \emph{private} key
+    \item Receiver uses complementary \emph{public} key
+    \item Allows sender to prove he knows private key
+\end{itemize}
+
+\begin{figure}[H]
+    \tikzsetnextfilename{asymmetric-key-rev}
+    \begin{tikzpicture}
+        \node (plaintext1) {Plaintext};
+        \node[below=of plaintext1,draw,fill=yellow!40,ellipse,align=left] (enc) {Decrypt with\\\emph{public} key};
+        \node[right=6cm of enc,draw,fill=yellow!40,ellipse,align=left] (dec) {Encrypt with\\\emph{private} key};
+        \node[above=of dec] (plaintext2) {Plaintext};
+        \path(enc) -- (dec) node[pos=0.5,minimum size=3cm,cloud,draw,fill=blue!40!white,yshift=-1cm] (internet) {};
+        \node at ([yshift=1cm]internet.center) {Internet};
+        \draw[->] (plaintext2) -- (dec);
+        \draw (dec.south) -- ([yshift=-1cm]dec.south);
+        \draw[->] ([yshift=-1cm]dec.south) -| (enc) node[pos=0.25,above] {Ciphertext};
+        \draw[->] (enc) -- (plaintext1);
+    \end{tikzpicture}
+\end{figure}
+
+\subsection{Integrity: Cryptographic Hashes}
+\begin{itemize}[nosep]
+    \item Sender computes a \emph{digest} of messages $\mathbf{m}$, i.e., $H(m)$
+          \begin{itemize}[nosep]
+              \item $H$ is a publicy known \emph{hash function}
+          \end{itemize}
+    \item Send $m$ in any manner
+    \item Send digest $\mathbf{d} = H(\mathbf{m})$ to receiver in a secure way:
+          \begin{itemize}[nosep]
+              \item Using another physical channel
+              \item Using encryption (why does this help?)
+          \end{itemize}
+    \item Upon receiving $\mathbf{m}$ and $\mathbf{d}$, receiver recomputs $H(\mathbf{m})$ to see whether result agrees with $\mathbf{d}$.
+\end{itemize}
+
+\subsection{Operation of Hashing for Integrity}
+\begin{figure}[H]
+    \tikzsetnextfilename{hasing-for-integrity}
+    \begin{tikzpicture}
+        \node (plaintext1) {Plaintext};
+        \node[right=10cm of plaintext1] (plaintext2) {Plaintext};
+        \node[ellipse,draw,fill=yellow!40,below right=3cm and 0.5 cm of plaintext1,align=center] (d1) {Digest\\(MD5)};
+        \node[ellipse,draw,fill=yellow!40,below left=3cm and 0.5 cm of plaintext2,align=center] (d2) {Digest\\(MD5)};
+        \node[above=1cm of d2,diamond,draw,fill=yellow!40,minimum width=2cm] (eq) {=};
+        \draw[->] (plaintext1) -- ([yshift=-1cm]plaintext1.south) -| (d1);
+        \path (d1) -- (d2) node[pos=0.5,cloud,fill=cyan!40!white,minimum height=4cm,minimum width=5cm,yshift=-1cm] (internet) {};
+        \node at ([yshift=-0.5cm]internet.north) {Internet};
+        \draw[->,red,ultra thick] (d1.south) -- ([yshift=-0.5cm]d1.south) -| node[pos=0.3,above] {\textcolor{black}{digest}} ([xshift=-0.5cm]eq.west) -- (eq.west);
+        \node[above=0.8cm of eq,align=center] (c) {\emph{Corrupted}\\\emph{Message}};
+        \draw[->] (plaintext1) -- ([yshift=-5cm]plaintext1.south) -| (plaintext2);
+        \draw[->] (plaintext1) -- ([yshift=-5cm]plaintext1.south) -| (d2) -- (eq) node[pos=0.5,right] {$\text{digest}'$};
+        \draw[->] (eq) -- (c) node[pos=0.4,right] {No};
+    \end{tikzpicture}
+\end{figure}
+
+\subsection{Cryptographically Strong Hashes}
+\begin{itemize}[nosep]
+    \item Hard to find \emph{collisions}
+          \begin{itemize}[nosep]
+              \item Adversary can't find two inputs that produce same hash
+              \item Someone cannot alter a message without modifying digest
+              \item Can succinctly refer to large objects
+          \end{itemize}
+    \item Hard to \emph{invert}
+          \begin{itemize}[nosep]
+              \item Given hash, adversary can't find input that produces it
+              \item Can refer obliquely to private objects (e.g. passwords)
+                    \begin{itemize}[nosep]
+                        \item Send hash of object rather than object itself
+                    \end{itemize}
+          \end{itemize}
+\end{itemize}
+
+\subsection{Effects of Cryptographic Hashing}
+\begin{figure}[H]
+    \tikzsetnextfilename{hash-values}
+    \begin{tikzpicture}
+        \node[draw,rectangle,fill=cyan!40,minimum width=2.5cm] (f1) {Fox};
+        \node[draw,rectangle,fill=cyan!40,minimum width=2.5cm,align=center,below=2cm of f1] (f2) {The red fox\\ \emph{runs} across\\ the ice};
+        \node[draw,rectangle,fill=cyan!40,minimum width=2.5cm,align=center,below=2cm of f2] (f3) {The red fox\\ \emph{walks} across\\ the ice};
+
+        \foreach \x in {1,2,3}
+            {
+                \node[draw,rectangle,fill=yellow!40,right=of f\x] (h\x) {SHA-256};
+                \draw[->,ultra thick] (f\x) -- (h\x);
+            }
+        \node[draw,rectangle,fill=pink!80,right=of h1,align=center] (sha1) {\texttt{6E9C620D CD316BF2}\\\texttt{9A37BF6D 0BE3D685}\\\texttt{ACFD18BE A7E6D5A2}\\\texttt{A6971045 39610491}};
+        \draw[->,ultra thick] (h1) -- (sha1);
+        \node[draw,rectangle,fill=pink!80,right=of h2,align=center] (sha2) {\texttt{57F1DD85 87DEE57A}\\\texttt{F424DD79 A679EE62}\\\texttt{FDA75462 4D2B1387}\\\texttt{E949F38E 36FD630D}};
+        \draw[->,ultra thick] (h2) -- (sha2);
+        \node[draw,rectangle,fill=pink!80,right=of h3,align=center] (sha3) {\texttt{E08EAB79 6F274B1E}\\\texttt{98E59150 F0B2CB22}\\\texttt{7B68F407 8172AE49}\\\texttt{D754752A 3DD30848}};
+        \draw[->,ultra thick] (h3) -- (sha3);
+    \end{tikzpicture}
+\end{figure}
+
+\subsection{Public Key Authentication}
+\begin{itemize}[nosep]
+    \item Each side only needs to know the other side's public key
+          \begin{itemize}[nosep]
+              \item No secret key needs to be shared
+          \end{itemize}
+    \item $A$ encrypts a \texttt{nonce} (random number) $x$ using $B$'s public key
+    \item $B$ proves it can recover $x$
+    \item $A$ can authenticate itself to $B$ in the same way
+\end{itemize}
+
+\begin{figure}[H]
+    \tikzsetnextfilename{public-key-auth}
+    \begin{tikzpicture}
+        \node (a) {$A$};
+        \node[right=4cm of a] (b) {$B$};
+        \draw (a) -- ([yshift=-4cm]a.south);
+        \draw (b) -- ([yshift=-4cm]b.south);
+        \draw[->] ([yshift=-0.5cm]a.south) -- ([yshift=-1.5cm]b.south) node[above,pos=0.5,rotate=-10] {$E(x,\texttt{Public}_B)$};
+        \draw[->] ([yshift=-1.5cm]b.south) -- ([yshift=-3cm]a.south) node[above,pos=0.5,rotate=15] {$x$};
+    \end{tikzpicture}
+\end{figure}
+
+\subsection{Digital Signatures}
+\begin{itemize}[nosep]
+    \item Suppose Alice has published public key $K_E$
+    \item If she wishes to prove who she is, she can send a message $x$ encrypted with her \emph{private} key $K_D$
+          \begin{itemize}[nosep]
+              \item Therefore: anyone with public key $K_E$ can recover $x$, verify that Alice must have sent the message
+              \item It provides a \emph{digital signature}
+              \item Alice can't later deny it $\implies$ \emph{non-repudiation}
+          \end{itemize}
+\end{itemize}
+
+\begin{figure}[H]
+    \tikzsetnextfilename{alice-bob-payment}
+    \begin{tikzpicture}[every node/.style={minimum width=2cm,align=center}]
+        \node[rectangle,draw,fill=cyan!40] (plaintext1) {I will\\pay \$500};
+        \node[rectangle,draw,fill=yellow!40,right=of plaintext1,label=above:{Alice}] (encrypt) {Sign\\(Encrypt)};
+        \node[rectangle,draw,fill=cyan!60!black,below=of encrypt] (crypt) {\texttt{DFCD3454}\\\texttt{BBEA788A}};
+        \node[rectangle,draw,fill=yellow!40,below=of crypt,label=below:{Bob}] (decrypt) {Verify\\(Decrypt)};
+        \node[rectangle,draw,fill=cyan!40,left=of decrypt] (plaintext2) {I will\\pay \$500};
+        \draw[->,ultra thick] (plaintext1) -- (encrypt);
+        \draw[->,ultra thick] (encrypt) -- (crypt);
+        \draw[->,ultra thick] (crypt) -- (decrypt);
+        \draw[->,ultra thick] (decrypt) -- (plaintext2);
+
+        \node[right=of encrypt] (akey) {Alice's Private Key};
+        \node[right=of decrypt] (bkey) {Alice's Public Key};
+        \draw[->,ultra thick] (akey) -- (encrypt);
+        \draw[->,ultra thick] (bkey) -- (decrypt);
+    \end{tikzpicture}
+\end{figure}
+
+\subsection{Public Key Infrastructure (PKI)}
+\begin{itemize}[nosep]
+    \item Public key crypto is \emph{very} powerful\dots
+    \item \dots by the \emph{realities} of tying public keys to real world identities turn out to be quite hard
+    \item PKI: \emph{Trust distribution} mechanism
+          \begin{itemize}[nosep]
+              \item Authentication via \emph{Digital Certificates}
+          \end{itemize}
+    \item Trust doesn't mean someone is honest, just that they are who they say they are\dots
+\end{itemize}
+
+\subsection{Managing Trust}
+\begin{itemize}[nosep]
+    \item The most solid level of trust is rooted in our direct personal experience
+          \begin{itemize}[nosep]
+              \item e.g. Alice's trust that Bob is who they say they are
+              \item Clearly doesn't scale to a global network!
+          \end{itemize}
+    \item In its absence, we rely on \emph{delegation}
+          \begin{itemize}[nosep]
+              \item Alice trusts Bob's identity because Charlie attests to it\dots
+              \item \dots and Alice trusts Charlie
+          \end{itemize}
+    \item Trust is not particularly transitive
+          \begin{itemize}[nosep]
+              \item Should Alice trust Bob because she trusts Charlie\dots
+              \item \dots and Charlie vouches for Donna \dots
+              \item \dots and Donna says Eve is trustworthy\dots
+              \item \dots and Eve vouces for Bob's identity?
+          \end{itemize}
+    \item Two models of delegating trust
+          \begin{itemize}[nosep]
+              \item Rely on your set of friends and their friends
+                    \begin{itemize}[nosep]
+                        \item ``Web of Trust'' -- e.g. PGP
+                    \end{itemize}
+              \item Rely on trust, well known authorities (\emph{and their minions})
+                    \begin{itemize}[nosep]
+                        \item ``Trusted root'' -- e.g. HTTPS
+                    \end{itemize}
+          \end{itemize}
+\end{itemize}
+
+\subsection{PKI Conceptual Framework}
+\begin{itemize}[nosep]
+    \item Trusted-Root PKI
+          \begin{itemize}[nosep]
+              \item Basis: well-known public key serves as \emph{root} of a hierarchy
+              \item Managed by the Certificate Authority (CA)
+          \end{itemize}
+    \item To publish a public key, ask the CA to digitally sign a statement indicating that they agree (``certify'') that it is indeed your key
+          \begin{itemize}[nosep]
+              \item This is a \emph{certificate} for your key (certificate = bunch of bits)
+                    \begin{itemize}[nosep]
+                        \item Includes both your public key and the signed statement
+                    \end{itemize}
+              \item Anyone can verify the signature
+          \end{itemize}
+    \item Delegation of trust to the CA
+          \begin{itemize}[nosep]
+              \item They'd better not screw up (duped into signing bogus key)
+              \item They'd better have procedures for dealing with stolen keys
+              \item Note: can build up a \emph{hierarchy} of signing
+          \end{itemize}
+\end{itemize}
+
+\subsection{HTTPS}
+\begin{itemize}[nosep]
+    \item Steps after clicking \url{https://www.amazon.com}
+    \item https = ``use HTTP over SSL/TLS''
+          \begin{itemize}[nosep]
+              \item SSL = Secure Socket Layer
+              \item TLS = Transport Layer Security
+                    \begin{itemize}[nosep]
+                        \item Successor to SSL, and compatible with it
+                    \end{itemize}
+              \item RFC 4346
+          \end{itemize}
+    \item Provides security layer (authentication, encryption) on top of TCP
+          \begin{itemize}[nosep]
+              \item Fairly transparent to the app
+          \end{itemize}
+\end{itemize}
+
+\subsubsection{HTTPS Connection via SSL/TLS}
+\begin{itemize}[nosep]
+    \item Browser (client) connects via TCP to Amazon's \texttt{HTTPS} server
+    \item Client sends over a list of crypto protocols it supports
+    \item Server picks protocols to use for this session
+    \item Server sends over its cerificate
+    \item (all of this is in the clear)
+\end{itemize}
+
+\subsection{Inside the Server's Certificate}
+\begin{itemize}[nosep]
+    \item \emph{Name} associated with the cert (e.g. Amazon)
+    \item Amazon's \emph{public key}
+    \item A bunch of auxhiliary info (physical address, type of cert, expiration time)
+    \item URL to \emph{revocation center} to check for revoked keys
+    \item Name of certificate's \emph{signatory} (who signed it)
+    \item A public-key signature of a has (\emph{MD5}) of all this
+          \begin{itemize}[nosep]
+              \item Constructed using the signatory's private RSA key
+          \end{itemize}
+\end{itemize}
+
+\subsection{Validating Amazon's Identity}
+\begin{itemize}[nosep]
+    \item Example: certificate of entity Amazon
+          \[\texttt{Cert} = E\left(\set{\text{Amazon}, \text{KAmazon}_{\text{public}}}, \text{KCA}_{\text{private}}\right)\]
+    \item Browser retrieves cert belonging to the \emph{signatory}
+          \begin{itemize}[nosep]
+              \item These are \emph{hardwired into the browser}
+          \end{itemize}
+    \item If it can't find the cert, it warns the user that the site has not been verified
+          \begin{itemize}[nosep]
+              \item And may ask whether to continue
+              \item Note, can still proceed, just \emph{without authentication}
+          \end{itemize}
+    \item Browser uses public key in signatory's cert to decrypt signature
+    \item Assuming signature matches, not have high confidence it is indeed Amazon
+          \begin{itemize}[nosep]
+              \item \dots assuming signatory is trustworth
+          \end{itemize}
+\end{itemize}
+
+\subsection{HTTPS Connection (SSL/TLS)}
+\begin{itemize}[nosep]
+    \item Browser constructs a random \emph{session key} $K$
+    \item Browser encrypts $K$ using Amazon's public key
+    \item Browser sends $E(K, KA_{\text{public}})$ to server
+    \item Browser displays lock
+    \item All subsequent communication encrypted with symmetric cipher using key $K$
+          \begin{itemize}[nosep]
+              \item e.g. client can authentication using a password
+          \end{itemize}
+\end{itemize}
+
+\subsection{Pharming}
+\begin{itemize}[nosep]
+    \item How can we get web clients to redirect to malicious sites?
+    \item Name resolution
+          \begin{itemize}[nosep]
+              \item Send a query to a DNS
+              \item Trust the IP address returned by the DNS
+              \item Other ways to go from name to IP?
+          \end{itemize}
+\end{itemize}

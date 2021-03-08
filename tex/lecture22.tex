@@ -1,0 +1,195 @@
+\section{Multihop Wireless Networks, Security, and RPL}
+\subsection{Routing Metrics}
+\begin{itemize}[nosep]
+    \item How to choose between two routes?
+    \item Hopcount is a poor metric!
+          \begin{itemize}[nosep]
+              \item Paths with few hops may use long, marginal links
+              \item Must find balance
+          \end{itemize}
+    \item All links do \emph{local retransmissions}
+\end{itemize}
+\subsection{Link Quality Estimation}
+\[\texttt{ETX}(L) = \frac{1}{\Call{PRR}{f}\cdot\Call{PRR}{b}}\]
+
+\subsection{Routing Metrics}
+\begin{itemize}[nosep]
+    \item Idea: use expected transmissions over a link as its cost!
+          \begin{itemize}[nosep]
+              \item $\texttt{ETX} = \sfrac{1}{\texttt{PRR}}$ (Packet Reception Rate)
+              \item Variation: \texttt{ETT}, takes data rate into account
+          \end{itemize}
+\end{itemize}
+
+\subsection{Multihop Throughput}
+\begin{figure}[H]
+    \tikzsetnextfilename{multihopthroughput}
+    \begin{tikzpicture}[every node/.style={blue!40!white,draw,fill,circle,minimum size=1cm}, node distance=1cm]
+        \node (1) {\textcolor{white}{1}};
+        \foreach \i [evaluate=\i as \j using \i-1] in {2,...,6}
+            {
+                \node[right=of \j] (\i) {\textcolor{white}{\i}};
+            }
+    \end{tikzpicture}
+\end{figure}
+\begin{itemize}[nosep]
+    \item Only every third node can transmit!
+          \begin{itemize}[nosep]
+              \item Assuming a node can talk to its immediate neighbors
+                    \begin{enumerate}[label=(\arabic*)]
+                        \item Nodes can't send and receive at the same time
+                        \item Third hop transmission prevents second hop from receiving
+                        \item Worse if you are doing link-local ACKs
+                    \end{enumerate}
+          \end{itemize}
+    \item In TCP, problem is worse: data and ACK
+\end{itemize}
+
+\subsection{Sometimes you can't (or shouldn't) hide that you are on wireless!}
+
+\subsection{TCP over wireless}
+\begin{itemize}[nosep]
+    \item How to handle
+          \begin{itemize}[nosep]
+              \item Link losses
+              \item Hop-by-hop retransmissions
+              \item Congestion vs. lossy links
+          \end{itemize}
+\end{itemize}
+
+\subsection{Security}
+\subsection{Basic Requirements for Secure Communication}
+\begin{itemize}[nosep]
+    \item \emph{Availabilty:} Will the network deliver data?
+          \begin{itemize}[nosep]
+              \item Infrastructure compromise, DDoS
+          \end{itemize}
+    \item \emph{Authentication:} Who is this actor?
+          \begin{itemize}[nosep]
+              \item Spoofing, phishing
+          \end{itemize}
+    \item \emph{Integrity:} Do messages arrive in original form?
+    \item \emph{Confidentiality:} Can adversary read the data?
+          \begin{itemize}[nosep]
+              \item Sniffing, man-in-the-middle
+          \end{itemize}
+    \item \emph{Provenance:} Who is responsible for this data?
+          \begin{itemize}[nosep]
+              \item Forging responses, denying responsibility
+              \item Not who sent the data, but who created it
+          \end{itemize}
+\end{itemize}
+
+\subsection{Other Desirable Security Properties}
+\begin{itemize}[nosep]
+    \item \emph{Authorization:} is actor allowed to do this action?
+          \begin{itemize}[nosep]
+              \item Access controls
+          \end{itemize}
+    \item \emph{Accountability/Attribution:} who did this activity?
+    \item \emph{Audit/Forensics:} what occurred in the past?
+          \begin{itemize}[nosep]
+              \item A broader notion of accountability/attribution
+          \end{itemize}
+    \item \emph{Appropriate use:} is action consistent with policy?
+          \begin{itemize}[nosep]
+              \item e.g. no spam, no games during business hours
+          \end{itemize}
+    \item \emph{Freedom from traffic analysis:} can someone tell when I am sending and to whom?
+    \item \emph{Anonymity:} can someone tell I sent this packet?
+\end{itemize}
+
+\subsection{Internet's Design: Insecure}
+\begin{itemize}[nosep]
+    \item Designed for simplicity in a na\"{i}ve era
+    \item ``On by default'' design
+    \item Readily available zombie machines
+    \item Attacks look like normal traffic
+    \item Internet's federated operation obstructs cooperation for diagnosis/mitigation
+\end{itemize}
+
+\subsection{Eavesdropping -- Message Interception (Attack on Confidentiality)}
+\begin{itemize}[nosep]
+    \item Unauthorized access to information
+    \item Packet sniffers and wiretappers
+    \item Illicit copying of files and programs
+\end{itemize}
+\begin{figure}[H]
+    \tikzsetnextfilename{eavesdropping-attack}
+    \begin{tikzpicture}
+        \node[draw,fill,circle,minimum size=2cm,blue!40!white] (a) {\textcolor{black}{$A$}};
+        \node[draw,fill,circle,minimum size=2cm,blue!40!white,right=4cm of a] (b) {\textcolor{black}{$B$}};
+        \node[below right=of a] (e) {Eavesdropper};
+        \draw[->] (a) -- (b) node[pos=0.3,minimum size=0,inner sep=0] (s) {};
+        \draw[->] (a) -- (s) to[bend left=45] (e);
+    \end{tikzpicture}
+\end{figure}
+
+\subsection{Eavesdropping Attack: Example}
+\begin{itemize}[nosep]
+    \item tcpdump with promiscuous network
+          \begin{itemize}[nosep]
+              \item On a switched network, what can you see?
+          \end{itemize}
+    \item What might the following traffic types reveal about communications?
+          \begin{itemize}[nosep]
+              \item DNS lookups (and replies)
+              \item IP packets without payloads (headers only)
+              \item Payloads
+          \end{itemize}
+\end{itemize}
+
+\subsection{Integrity Attacks -- Tampering}
+\begin{itemize}[nosep]
+    \item Stop the flow of the message
+    \item Delay and optionally modify the emssage
+    \item Release the message again
+\end{itemize}
+\begin{figure}[H]
+    \tikzsetnextfilename{tampering-attack}
+    \begin{tikzpicture}
+        \node[draw,fill,circle,minimum size=2cm,blue!40!white] (a) {\textcolor{black}{$A$}};
+        \node[draw,fill,circle,minimum size=2cm,blue!40!white,right=8cm of a] (b) {\textcolor{black}{$B$}};
+        \node[below right=1.5cm and 3cm of a] (e) {Perpetrator};
+        \draw[->] (a) -- ([xshift=1cm]a.east) to[bend left] ([xshift=-0.3cm]e.north);
+        \draw[->] ([xshift=0.3cm]e.north) to[bend left] ([xshift=-1cm]b.west) -- (b);
+    \end{tikzpicture}
+\end{figure}
+
+\subsection{Authenticity Attack -- Fabrication}
+\begin{itemize}[nosep]
+    \item Unauthorized assumption of other's identitiy
+    \item Generate and distribute objects under this identity
+\end{itemize}
+
+\begin{figure}[H]
+    \tikzsetnextfilename{authenticity-attack}
+    \begin{tikzpicture}
+        \node[draw,fill,circle,minimum size=2cm,blue!40!white] (a) {\textcolor{black}{$A$}};
+        \node[draw,fill,circle,minimum size=2cm,blue!40!white,right=8cm of a] (b) {\textcolor{black}{$B$}};
+        \node[below right=1.5cm and 3cm of a] (e) {Masquerader: From $A$};
+        \draw[->] ([xshift=0.3cm]e.north) to[bend left] ([xshift=-1cm]b.west) -- (b);
+    \end{tikzpicture}
+\end{figure}
+
+\subsection{Attack on Availability}
+\begin{itemize}[nosep]
+    \item Destroy hardware (cutting fiber) or software
+    \item Modify software in a subtle way
+    \item Corrupt packets in transit
+          \begin{figure}[H]
+              \tikzsetnextfilename{availability-attack}
+              \begin{tikzpicture}
+                  \node[draw,fill,circle,minimum size=2cm,blue!40!white] (a) {\textcolor{black}{$A$}};
+                  \node[draw,fill,circle,minimum size=2cm,blue!40!white,right=8cm of a] (b) {\textcolor{black}{$B$}};
+                  \path (a) -- (b) node[pos=0.5] (m) {};
+                  \draw[->] (a) -- (m);
+                  \draw ([yshift=0.5cm]m.north) -- ([yshift=-0.5cm]m.south);
+              \end{tikzpicture}
+          \end{figure}
+    \item Blatant \emph{denial of service} (DoS):
+          \begin{itemize}[nosep]
+              \item Crashing the server
+              \item Overwhelm the server (use up its resource)
+          \end{itemize}
+\end{itemize}

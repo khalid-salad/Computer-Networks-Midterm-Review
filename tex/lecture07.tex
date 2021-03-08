@@ -34,7 +34,7 @@
 \subsection{UDP Checksum}
 \begin{itemize}[nosep]
     \item Uses the same algorithm as the IP checksum
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Set checksum field to 0
               \item Sum all 16-bit words, adding any carry bits to the LSB
               \item Flip bits to get checksum (except $\texttt{0xffff}\to\texttt{0xffff}$)
@@ -97,7 +97,7 @@
               \item Why do they vary? What do they influence?
           \end{itemize}
     \item Out of order packets
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Not only because of drops/retransmissions
               \item Can get very old packets (up to 120s), must not get confused
           \end{itemize}

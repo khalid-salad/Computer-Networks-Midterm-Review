@@ -152,7 +152,7 @@ One could test network protocols with read/write on a file
               \item Specific type of error in gobal \mintinline{c}|int errno|
           \end{itemize}
     \item \mintinline{c}|#include <sys/errno.h>| for possible values
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item \mintinline{c}|2| = \mintinline{c}|ENOENT| ``no such file or directory''
               \item \mintinline{c}|13| = \mintinline{c}|EACCES| ``permission denied''
           \end{itemize}
@@ -431,7 +431,7 @@ FD_CLR(fd, &fdset);
 FD_ISSET(fd, &fdset);
 FD_ZERO(&fdset);
 \end{minted}
-\begin{itemize}\item Entire program runs in an \emph{event loop}\end{itemize}
+\begin{itemize}[nosep]\item Entire program runs in an \emph{event loop}\end{itemize}
 \subsection{Event-driven servers}
 \begin{itemize}[nosep]
     \item Quite different from processes/threads

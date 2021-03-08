@@ -1,0 +1,324 @@
+\section{Swiching and Physical Layer}
+\subsection{Spanning Tree}
+\begin{tcolorbox}[colframe=red!40!white,colback=yellow!20,title=Spanning tree]
+    In the mathematical field of graph theory, a spanning tree $T$ of an undirected graph $G$ is a subgraph that is a tree which includes all of the vertices of $G$. In general, a graph may have several spanning trees, but a graph that is not connected will not contain a spanning tree (see spanning forests below). If all of the edges of $G$ are also edges of a spanning tree $T$ of $G$, then $G$ is a tree and is identical to $T$ (that is, a tree has a unique spanning tree and it is itself).
+\end{tcolorbox}
+\url{https://en.wikipedia.org/wiki/Spanning_tree}
+
+\subsection{Spanning Tree Algorithms}
+\begin{itemize}[nosep]
+    \item Graph search algorithms
+    \item Dijkstra's algorithm
+    \item Minimum-spanning Tree Algorithms
+\end{itemize}
+
+\subsection{Spanning Tree}
+\begin{itemize}[nosep]
+    \item Need to disable ports, so that no loops in the network
+    \item Like creating a spanning tree in a graph
+          \begin{itemize}[nosep]
+              \item View switches and networks as nodes, ports as edges
+          \end{itemize}
+\end{itemize}
+
+\subsection{Distributed Spanning Tree Algorithm}
+\begin{itemize}[nosep]
+    \item Every bridge has a unique ID (Ethernet Address)
+    \item Goal:
+          \begin{itemize}[nosep]
+              \item Bridge with the smallest ID is the root
+              \item Each segment has one designated bridge, responsible for forwarding its packets towards the root
+                    \begin{itemize}[nosep]
+                        \item Bridge closest to root is designated bridge
+                        \item If there is a tie, bridge with lowest ID wins
+                    \end{itemize}
+          \end{itemize}
+\end{itemize}
+
+\subsection{Spanning Tree Protocol}
+\begin{itemize}[nosep]
+    \item Spanning Tree messages contain:
+          \begin{itemize}[nosep]
+              \item ID of bridge sending the message
+              \item ID sender believes to be the root
+              \item Distance (in hops) from sender to root
+          \end{itemize}
+    \item Bridges remember best config msg on each port
+    \item Send message when you think you are the root
+    \item Otherwise, forward messages from best known root
+          \begin{itemize}[nosep]
+              \item Add one to distance before forwarding
+              \item Don't forward if you know you aren't dedicated bridge
+          \end{itemize}
+\end{itemize}
+
+\subsection{Limitations of Bridges}
+\begin{itemize}[nosep]
+    \item Scaling
+          \begin{itemize}[nosep]
+              \item Spanning tree algorithm doesn't scale
+              \item Broadcast does not scale
+              \item No way to route around congested links, \emph{even if path exists}
+          \end{itemize}
+    \item May violate assumptions
+          \begin{itemize}[nosep]
+              \item Could confuse some applications that assume single segment
+              \item Much more likely to drop packets
+              \item Makes latency between nodes non-uniform
+              \item Beware of transparency
+          \end{itemize}
+\end{itemize}
+
+\subsection{Local Area Network}
+\subsection{Physical Layer}
+\begin{itemize}[nosep]
+    \item Responsible for specifying the physical medium
+          \begin{itemize}[nosep]
+              \item Type of cable, fiber, wireless frequency
+          \end{itemize}
+    \item Responsible for specifying the signal (modulation)
+          \begin{itemize}[nosep]
+              \item Transmitter varies \emph{something} (amplitude, frequency, phase)
+              \item Receiver samples, recovers signal
+          \end{itemize}
+    \item Responsible for specifying the bits (encoding)
+          \begin{itemize}[nosep]
+              \item Bits above physical layer $\to$ \emph{chips}
+          \end{itemize}
+\end{itemize}
+\subsection{Specifying the signal}
+\begin{itemize}[nosep]
+    \item Chips vs. bits
+          \begin{itemize}[nosep]
+              \item Chips: data (in bits) at the physical layer
+              \item Bits: data above the physical layer
+          \end{itemize}
+    \item Physical layer specifies Analog signal $\Leftrightarrow$ chip mapping
+          \begin{itemize}[nosep]
+              \item On-ioff keying (OOK): voltage of 0 is 0, $+V$ is 1
+              \item PAM-5: 000 is 0, 001 is $+1$, 010 is $-1$, 011 is $-2$, 100 is $+2$
+              \item Frequency shift keying (FSK)
+              \item Phase shift keying (PSK)
+          \end{itemize}
+\end{itemize}
+
+\subsection{Modulation}
+\begin{itemize}[nosep]
+    \item Specifies mapping between digital signal and some variation in analog signal
+    \item Why not just a square wave ($1V=1$, $0V=0$)?
+          \begin{itemize}[nosep]
+              \item Not square when bandwidth limited
+          \end{itemize}
+    \item Bandwidth -- frequencies that a channel propagates well
+          \begin{itemize}[nosep]
+              \item Signals consist of many frequency components
+              \item Attenuation and delay frequency-dependent
+          \end{itemize}
+\end{itemize}
+
+\subsection{Use Carriers}
+\begin{itemize}[nosep]
+    \item Idea: use only frequencies that transmit well
+    \item \emph{Modulate} the signal to encode bits
+\end{itemize}
+
+\subsection{How Fast can you Really Send?}
+\begin{itemize}[nosep]
+    \item Depends on frequency and signal/noise ratio
+    \item Shannong $C=B\log_2(1+\sfrac{S}{N})$
+          \begin{itemize}[nosep]
+              \item $C$ is the channel capacity in bits/second
+              \item $B$ is the bandwidth of the channel in \si{Hz}
+              \item $S$ and $N$ are average signal and noise power
+          \end{itemize}
+    \item Example: Telephone Line
+          \begin{itemize}[nosep]
+              \item $3\si{KHz}$ bandwith, $30\si{dB}\sfrac{S}{N} = 10^{\sfrac{30}{10}} = 1000$
+              \item $C\approx 30\si{Kbps}$
+          \end{itemize}
+\end{itemize}
+
+\subsection{Encoding}
+\begin{itemize}[nosep]
+    \item Now assume that we can somehow modulate a signal: receiver can decode our binary stream
+    \item How od we encode binary data onto signals?
+    \item One approach: Non-return to Zero (NRZ)
+          \begin{itemize}[nosep]
+              \item Transmit 0 as low, 1 as high!
+          \end{itemize}
+\end{itemize}
+
+\subsection{Drawbacks of NRZ}
+\begin{itemize}[nosep]
+    \item No signal could be interpreted as 0 (or vice-versa)
+    \item Consecutive 1s or 0s are problematic
+    \item Baseline wander problem
+          \begin{itemize}[nosep]
+              \item How do you set the threshold?
+              \item Could compare to average, but average may drift
+          \end{itemize}
+    \item Clock recovery problem
+          \begin{itemize}[nosep]
+              \item For long runs of no change, could miscount periods
+          \end{itemize}
+\end{itemize}
+
+\subsection{Alternative Encodings}
+\begin{itemize}[nosep]
+    \item Non-return to Zero Inverted (NRZI)
+          \begin{itemize}[nosep]
+              \item Encode 1 with transition from current signal
+              \item Encode 0 by staying at the same level
+              \item At least solves problem of consecutive 1s
+          \end{itemize}
+\end{itemize}
+
+\subsection{Manchester}
+\begin{itemize}[nosep]
+    \item Map $0\to\text{chips }01$; $1\to\text{chips }10$
+          \begin{itemize}[nosep]
+              \item Transmission rate now 1 bit per two clock cycles
+          \end{itemize}
+    \item Solves clock recovery, baseline wander
+    \item But cuts transmission rate in half
+\end{itemize}
+
+\subsection{4B/5B}
+\begin{itemize}[nosep]
+    \item Can we have a more efficient encoding?
+    \item Every 4 bits encoded as 4 \emph{chips}
+    \item Need 16 5-bit codes:
+          \begin{itemize}[nosep]
+              \item selected to have no more than one leading 0 and no more than two trailing 0s
+              \item Never get more than 3 consecutive 0s
+          \end{itemize}
+    \item Transmit chips using NRZI
+    \item Other codes used for other purposes
+          \begin{itemize}[nosep]
+              \item e.g. 11111: line idle; 00100: half
+          \end{itemize}
+    \item Achieves 80\% efficiency
+\end{itemize}
+
+\subsection{Encoding Goals}
+\begin{itemize}[nosep]
+    \item DC Balancing (same number of 0 and 1 chips)
+    \item Clock synchronization
+    \item Can recover some chip errors
+    \item Constrain analog signal patterns to make signal more robust
+    \item Want near channel capacity with negligible errors
+          \begin{itemize}[nosep]
+              \item Shannon says it's possible, doesn't tell us how
+              \item Codes can get computationally expensive
+          \end{itemize}
+    \item In practice
+          \begin{itemize}[nosep]
+              \item More complex encoding: fewer bps, more robust
+              \item Less complex encoding: more bps, less robust
+          \end{itemize}
+\end{itemize}
+
+\subsection{802.15.4}
+\begin{itemize}[nosep]
+    \item Standard for low-power, low-rate wireless PANs
+          \begin{itemize}[nosep]
+              \item Must tolerate high chip error rates
+          \end{itemize}
+    \item Uses a 4B/32B bit-to-chip encoding
+\end{itemize}
+
+\begin{figure}[H]
+    \tikzsetnextfilename{802.15.4encoding}
+    \begin{tikzpicture}[every node/.style={rectangle},node distance=0cm]
+        \node (0) {0000};
+        \node[right=1cm of 0] (c0) {11011001110000110101001000101110};
+        \node[below=of 0] (1) {0001};
+        \node[below=of c0] (c1) {11101101100111000011010100100010};
+        \node[below=of 1] (2) {0010};
+        \node[below=of c1] (c2) {00101110110110011100001101010010};
+        \node[below=of 2] (3) {0011};
+        \node[below=of c2] (c3) {00100010111011011001110000110101};
+        \node[below=of 3] (4) {0100};
+        \node[below=of c3] (c4) {01010010001011101101100111000011};
+        \node[below=of 4] (5) {0101};
+        \node[below=of c4] (c5) {00110101001000101110110110011100};
+        \node[below=of 5] (6) {0110};
+        \node[below=of c5] (c6) {11000011010100100010111011011001};
+        \node[below=of 6] (7) {0111};
+        \node[below=of c6] (c7) {10011100001101010010001011101101};
+        \node[below=of 7] (8) {1000};
+        \node[below=of c7] (c8) {10001100100101100000011101111011};
+        \node[below=of 8] (9) {1001};
+        \node[below=of c8] (c9) {10111000110010010110000001110111};
+        \node[below=of 9] (10) {1010};
+        \node[below=of c9] (c10) {01111011100011001001011000000111};
+        \node[below=of 10] (11) {1011};
+        \node[below=of c10] (c11) {01110111101110001100100101100000};
+        \node[below=of 11] (12) {1100};
+        \node[below=of c11] (c12) {00000111011110111000110010010110};
+        \node[below=of 12] (13) {1101};
+        \node[below=of c12] (c13) {01100000011101111011100011001001};
+        \node[below=of 13] (14) {1110};
+        \node[below=of c13] (c14) {10010110000001110111101110001100};
+        \node[below=of 14] (15) {1111};
+        \node[below=of c14] (c15) {11001001011000000111011110111000};
+        \foreach \i in {0,...,15} {
+                \draw[->] (\i) -- (c\i);
+                \draw (\i.north west) -- (\i.north east);
+                \draw (c\i.north west) -- (c\i.north east);
+            }
+        \draw (15.south west) -- (15.south east);
+        \draw (c15.south west) -- (c15.south east);
+        \draw (0.north east) -- (15.south east);
+        \draw (0.north west) -- (15.south west);
+        \draw (c0.north east) -- (c15.south east);
+        \draw (c0.north west) -- (c15.south west);
+
+        \draw [decorate,decoration={brace,amplitude=10pt,mirror,raise=4pt},yshift=0pt] (c0.north east) -- (c0.north west) node[above,black,midway,yshift=0.4cm] {Chips};
+        \draw [decorate,decoration={brace,amplitude=10pt,mirror,raise=4pt},yshift=0pt] (0.north east) -- (0.north west) node[above,black,midway,yshift=0.4cm] {Bits};
+        \draw [decorate,decoration={brace,amplitude=10pt,mirror,raise=4pt},yshift=0pt] (0.north west) -- (15.south west) node[left,black,midway,xshift=-0.7cm,yshift=-0.7cm,rotate=-90] {Symbols};
+    \end{tikzpicture}
+\end{figure}
+
+\subsection{Framing}
+\begin{itemize}[nosep]
+    \item Given a stream of bits, how can we represent boundaries?
+    \item Break sequence of bits into a frame
+    \item Typically done by a network adaptor
+\end{itemize}
+
+\subsection{Representing Boundaries}
+\begin{itemize}[nosep]
+    \item Sentinels
+    \item Length counts
+    \item Clock-based
+\end{itemize}
+
+\subsection{Bit-Oriented Protocols}
+\begin{itemize}[nosep]
+    \item View message as a stream of bits, not bytes
+    \item Can use sentinel approach as well, (e.g. HDLC)
+          \begin{itemize}[nosep]
+              \item HDLC begin/end sequence 01111110
+          \end{itemize}
+    \item Use \emph{bit stuffing} to escape 01111110
+          \begin{itemize}[nosep]
+              \item Always append 0 after five consecutive 1s in data
+              \item After five 1s, receiver uses next two bits to decide if stuffed, end of frame, or error
+          \end{itemize}
+\end{itemize}
+
+\subsection{Length-based Framing}
+\begin{itemize}[nosep]
+    \item Drawback of sentinel techniques
+          \begin{itemize}[nosep]
+              \item Length of frame depends on data
+          \end{itemize}
+    \item Alternative: put length in header (e.g. DDCMP)
+    \item Dancer: Framing Errors
+          \begin{itemize}[nosep]
+              \item What if high bit counter gets corrupted?
+              \item Adds 8K to length of frame, may lose many frames
+              \item CRC checksum helps detect error
+          \end{itemize}
+\end{itemize}

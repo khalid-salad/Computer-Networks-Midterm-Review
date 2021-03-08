@@ -126,7 +126,7 @@
     \item Transport Layer provides that service
 \end{itemize}
 \subsection{Transport Layer}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Transport protocols sit on top of network layer and provide
           \begin{itemize}[nosep]
               \item Application-level multiplexing (``ports'')
@@ -235,12 +235,12 @@
               \item Compute $n(x) - r(x)$
           \end{itemize}
     \item Checking CRC is easy
-          \begin{itemize}
+          \begin{itemize}[nosep]
               \item Reduce message by $C(x)$, make sure remainder is 0
           \end{itemize}
 \end{itemize}
 \subsection{Reliable Delivery}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Error detection can discard bad packets
     \item Problem: if bad packets are lost, how can we ensure reliable delivery?
           \begin{itemize}[nosep]
@@ -295,7 +295,7 @@
 \end{itemize}
 
 \subsection{Sliding Window Sender}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Assign sequence number (\texttt{SeqNum}) to each frame
     \item Maintain three state variables
           \begin{itemize}[nosep]
@@ -309,7 +309,7 @@
 \end{itemize}
 
 \subsection{Sliding Window Receiver}
-\begin{itemize}
+\begin{itemize}[nosep]
     \item Maintain three state variables
           \begin{itemize}[nosep]
               \item receive window size (\texttt{RWS})
