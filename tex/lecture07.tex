@@ -270,5 +270,5 @@
     \item Estimate RTT
     \item $\textproc{RTT}(t) = \alpha \textproc{RTT}(t - 1) + (1 - \alpha) \texttt{newEst}$
     \item More generally, for a dataset $Y = Y_1, Y_2, \dots$
-          \[S(t) = \begin{cases}Y_1 & t = 1\\\alpha Y_t + (1 - \alpha)S(t - 1) & t > 1\end{cases}\]
+          \[S(t) = \begin{cases}Y_1 & t = 1\\\alpha S(t - 1) + (1 - \alpha)Y_t & t > 1\end{cases}\]
 \end{itemize}
